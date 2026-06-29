@@ -15,7 +15,7 @@ export function newSave(): SaveState {
     unlockedWings: [],
     unlockedDungeons: [FIRST_DUNGEON],
     bossesDefeated: [],
-    settings: { autoCastAbilities: true },
+    settings: { autoCastAbilities: true, soundEnabled: true },
   };
 }
 
@@ -47,6 +47,7 @@ export function migrate(raw: unknown): SaveState {
     settings: {
       autoCastAbilities:
         r.settings?.autoCastAbilities ?? base.settings.autoCastAbilities,
+      soundEnabled: r.settings?.soundEnabled ?? base.settings.soundEnabled,
     },
   };
 }

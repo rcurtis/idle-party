@@ -181,6 +181,7 @@ export interface SaveState {
   bossesDefeated: string[];
   settings: {
     autoCastAbilities: boolean;
+    soundEnabled: boolean;
   };
 }
 

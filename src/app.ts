@@ -4,6 +4,7 @@ import { buyNode as buyNodeCore } from "./core/economy";
 import { bankRun, type BankResult } from "./core/game";
 import type { RunState, SaveState } from "./core/types";
 import { SpriteSheet } from "./render/spritesheet";
+import { Sfx } from "./render/sfx";
 import { clear } from "./ui/dom";
 import { renderHub } from "./ui/hub";
 import { DungeonView } from "./ui/dungeon";
@@ -17,6 +18,7 @@ export class App {
   sheet: SpriteSheet;
   root: HTMLElement;
   screen: Screen = "tavern";
+  sfx = new Sfx();
 
   run: RunState | null = null;
   speed = 2;
@@ -32,6 +34,7 @@ export class App {
     this.root = root;
     this.sheet = sheet;
     this.save = loadSave();
+    this.sfx.muted = !this.save.settings.soundEnabled;
   }
 
   persist(): void {
@@ -40,8 +43,18 @@ export class App {
 
   setSave(save: SaveState): void {
     this.save = save;
+    this.sfx.muted = !save.settings.soundEnabled;
     this.persist();
     this.render();
+  }
+
+  /** Toggle combat sound on/off (persisted) and re-render the controls. */
+  toggleSound(): void {
+    const soundEnabled = !this.save.settings.soundEnabled;
+    this.setSave({
+      ...this.save,
+      settings: { ...this.save.settings, soundEnabled },
+    });
   }
 
   go(screen: Screen): void {

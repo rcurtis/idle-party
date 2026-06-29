@@ -15,9 +15,9 @@ function enemy(
 // --- Dungeon 1: The Catacombs ---------------------------------------------
 
 const catacombsEnemies: Record<string, EnemyDef> = {
-  rat: enemy("rat", "Tomb Rat", 30, 5, 1.2, 0, 4),
-  skeleton: enemy("skeleton", "Skeleton", 55, 9, 1.4, 0.05, 7),
-  ghoul: enemy("ghoul", "Ghoul", 90, 13, 1.5, 0.1, 12),
+  rat: enemy("rat", "Tomb Rat", 55, 5, 1.2, 0, 4),
+  skeleton: enemy("skeleton", "Skeleton", 100, 9, 1.4, 0.05, 7),
+  ghoul: enemy("ghoul", "Ghoul", 165, 13, 1.5, 0.1, 12),
   bossLich: enemy("bossLich", "The Bone Lich", 1400, 28, 1.3, 0.2, 220),
 };
 
@@ -44,9 +44,9 @@ const catacombs: DungeonDef = {
 // --- Dungeon 2: The Sunken Crypt ------------------------------------------
 
 const cryptEnemies: Record<string, EnemyDef> = {
-  drowned: enemy("drowned", "Drowned Thrall", 130, 18, 1.3, 0.12, 18),
-  wraith: enemy("wraith", "Wraith", 180, 26, 1.5, 0.18, 26),
-  golem: enemy("golem", "Bog Golem", 320, 34, 1.7, 0.3, 40),
+  drowned: enemy("drowned", "Drowned Thrall", 235, 18, 1.3, 0.12, 18),
+  wraith: enemy("wraith", "Wraith", 325, 26, 1.5, 0.18, 26),
+  golem: enemy("golem", "Bog Golem", 575, 34, 1.7, 0.3, 40),
   bossKraken: enemy("bossKraken", "The Tide Maw", 4200, 55, 1.2, 0.32, 700),
 };
 

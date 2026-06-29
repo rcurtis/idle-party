@@ -23,6 +23,8 @@ export class Layout {
     readonly sheet: SpriteSheet,
     readonly W: number,
     readonly H: number,
+    /** Number of party members, used to mirror the formation (see partyX). */
+    readonly partyCount = 1,
   ) {
     this.unit = sheet.cell;
     this.cell = sheet.cell * SCALE;
@@ -31,7 +33,12 @@ export class Layout {
   }
 
   partyX(i: number): number {
-    return 30 + i * (this.cell - 10);
+    // The party stands on the left facing right, so the *front* of the line —
+    // the slot nearest the enemies — is the rightmost on-screen position. We
+    // mirror the index so party[0] (the tank/Knight) always renders at the
+    // front, shielding the squishier members drawn behind it.
+    const slot = Math.max(0, this.partyCount - 1 - i);
+    return 30 + slot * (this.cell - 10);
   }
   partyTopY(): number {
     return this.baseY;

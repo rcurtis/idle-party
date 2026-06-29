@@ -205,6 +205,20 @@ export function renderHub(app: App): HTMLElement {
       }),
       " Auto-cast abilities",
     ]),
+    el("label", { class: "toggle" }, [
+      el("input", {
+        type: "checkbox",
+        ...(save.settings.soundEnabled ? { checked: true } : {}),
+        onchange: (e: Event) => {
+          const checked = (e.target as HTMLInputElement).checked;
+          app.setSave({
+            ...app.save,
+            settings: { ...app.save.settings, soundEnabled: checked },
+          });
+        },
+      }),
+      " Sound effects",
+    ]),
     el("span", { class: "hub-hint" }, [
       "Spend gold down a wing to recruit & upgrade. Beat bosses for Sigils 🔹 to unlock dashed wings.",
     ]),

@@ -34,7 +34,9 @@ export const CLASSES: Record<ClassId, ClassDef> = {
       id: "taunt",
       name: "Iron Wall",
       kind: "taunt",
-      magnitude: 0.6,
+      // Shield = maxHp * magnitude * abilityPower. At rank one (abilityPower 1)
+      // this is a modest ~12% max-HP shield per cast; later AP upgrades scale it.
+      magnitude: 0.12,
       requiresNode: "kn_ironwall",
     },
   },

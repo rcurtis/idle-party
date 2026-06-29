@@ -36,7 +36,7 @@ export class DungeonView {
 
     this.canvas = el("canvas", { width: CANVAS_W, height: CANVAS_H, class: "scene" });
     this.ctx = this.canvas.getContext("2d")!;
-    this.layout = new Layout(app.sheet, CANVAS_W, CANVAS_H);
+    this.layout = new Layout(app.sheet, CANVAS_W, CANVAS_H, run.party.length);
 
     this.levelEl = el("span", { class: "run-stat" }, []);
     this.goldEl = el("span", { class: "run-stat gold" }, []);
@@ -64,6 +64,15 @@ export class DungeonView {
       speedBtn(1),
       speedBtn(2),
       speedBtn(4),
+      el(
+        "button",
+        {
+          class: "ghost-btn",
+          title: app.save.settings.soundEnabled ? "Mute sound" : "Unmute sound",
+          onclick: () => app.toggleSound(),
+        },
+        [app.save.settings.soundEnabled ? "🔊" : "🔇"],
+      ),
       el(
         "button",
         { class: "ghost-btn", onclick: () => app.togglePause() },
@@ -120,6 +129,7 @@ export class DungeonView {
     const run = this.app.run;
     if (!run) return;
     this.frame++;
+    this.app.sfx.ingest(run); // sound first — Fx.ingest clears run.events
     this.fx.ingest(run, this.layout);
     this.fx.update(dt);
     drawScene(this.ctx, run, this.layout, this.fx, this.frame);
@@ -128,7 +138,11 @@ export class DungeonView {
       run.enemies.length && run.phase !== "advancing"
         ? `Level ${run.levelIndex + 1}`
         : `Level ${run.levelIndex + 1}`;
-    this.goldEl.textContent = `+${fmt(run.goldEarned)}g`;
+    // Live total gold: banked gold plus what's been collected this run so far.
+    // Once the run resolves, goldEarned is folded into save.gold, so stop
+    // adding it to avoid double-counting on the results screen.
+    const liveGold = this.app.save.gold + (run.resolved ? 0 : run.goldEarned);
+    this.goldEl.textContent = `🪙 ${fmt(liveGold)}`;
 
     // Ability cooldown overlays.
     for (const c of run.party) {
