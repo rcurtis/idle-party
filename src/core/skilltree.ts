@@ -29,13 +29,13 @@ const marksman: SkillWing = {
   name: "Marksman (Ranger)",
   sigilCost: 0,
   nodes: [
-    node("rg_dmg", "Sharpened Tips", 40, 8, {
+    node("rg_dmg", "Sharpened Tips", 18, 8, {
       target: "ranger",
       stat: "attack",
       op: "add",
       value: 4,
     }),
-    node("rg_speed", "Quick Draw", 70, 5, {
+    node("rg_speed", "Quick Draw", 45, 5, {
       target: "ranger",
       stat: "attackInterval",
       op: "mul",
@@ -44,7 +44,7 @@ const marksman: SkillWing = {
     node(
       "rg_hp",
       "Survival Training",
-      60,
+      30,
       6,
       { target: "ranger", stat: "maxHp", op: "add", value: 20 },
       ["rg_dmg"],
@@ -57,26 +57,32 @@ const vanguard: SkillWing = {
   name: "Vanguard (Knight)",
   sigilCost: 0,
   nodes: [
-    unlockNode("kn_ironwall", "Iron Wall", 80, {
-      target: "knight",
-      desc: "Unlocks Iron Wall: the Knight gains a damage-absorbing shield on cooldown.",
-    }),
-    node("kn_hp", "Thick Hide", 50, 10, {
+    node("kn_hp", "Thick Hide", 12, 10, {
       target: "knight",
       stat: "maxHp",
       op: "add",
-      value: 60,
+      value: 45,
     }),
-    node("kn_armor", "Plate Mastery", 90, 5, {
+    node("kn_armor", "Plate Mastery", 22, 6, {
       target: "knight",
       stat: "armor",
       op: "add",
       value: 0.04,
     }),
+    unlockNode(
+      "kn_ironwall",
+      "Iron Wall",
+      40,
+      {
+        target: "knight",
+        desc: "Unlocks Iron Wall: the Knight gains a damage-absorbing shield on cooldown.",
+      },
+      ["kn_hp"],
+    ),
     node(
       "kn_threat",
       "Provoke",
-      80,
+      28,
       4,
       { target: "knight", stat: "threat", op: "mul", value: 1.2 },
       ["kn_hp"],
@@ -89,13 +95,13 @@ const devotion: SkillWing = {
   name: "Devotion (Cleric)",
   sigilCost: 0,
   nodes: [
-    node("cl_heal", "Greater Mending", 70, 8, {
+    node("cl_heal", "Greater Mending", 28, 8, {
       target: "cleric",
       stat: "healPower",
       op: "add",
       value: 6,
     }),
-    node("cl_speed", "Swift Prayer", 90, 5, {
+    node("cl_speed", "Swift Prayer", 50, 5, {
       target: "cleric",
       stat: "attackInterval",
       op: "mul",
@@ -104,7 +110,7 @@ const devotion: SkillWing = {
     node(
       "cl_hp",
       "Blessed Vigor",
-      60,
+      32,
       6,
       { target: "cleric", stat: "maxHp", op: "add", value: 25 },
       ["cl_heal"],
@@ -117,13 +123,13 @@ const arcane: SkillWing = {
   name: "Arcane (Mage)",
   sigilCost: 0,
   nodes: [
-    node("mg_dmg", "Spell Power", 60, 10, {
+    node("mg_dmg", "Spell Power", 26, 10, {
       target: "mage",
       stat: "attack",
       op: "add",
       value: 6,
     }),
-    node("mg_ability", "Empowered Nukes", 110, 5, {
+    node("mg_ability", "Empowered Nukes", 70, 5, {
       target: "mage",
       stat: "abilityPower",
       op: "mul",
@@ -132,7 +138,7 @@ const arcane: SkillWing = {
     node(
       "mg_cd",
       "Mental Clarity",
-      120,
+      80,
       4,
       { target: "mage", stat: "abilityCooldown", op: "mul", value: 0.9 },
       ["mg_ability"],
@@ -145,13 +151,13 @@ const affliction: SkillWing = {
   name: "Affliction (Warlock)",
   sigilCost: 0,
   nodes: [
-    node("wl_dmg", "Virulence", 55, 10, {
+    node("wl_dmg", "Virulence", 24, 10, {
       target: "warlock",
       stat: "attack",
       op: "add",
       value: 4,
     }),
-    node("wl_ability", "Deeper Curse", 100, 6, {
+    node("wl_ability", "Deeper Curse", 60, 6, {
       target: "warlock",
       stat: "abilityPower",
       op: "mul",
@@ -160,7 +166,7 @@ const affliction: SkillWing = {
     node(
       "wl_cd",
       "Rapid Hexes",
-      120,
+      80,
       4,
       { target: "warlock", stat: "abilityCooldown", op: "mul", value: 0.9 },
       ["wl_ability"],
@@ -173,13 +179,13 @@ const warband: SkillWing = {
   name: "Warband (Party)",
   sigilCost: 0,
   nodes: [
-    node("pt_hp", "Hearty Stock", 80, 10, {
+    node("pt_hp", "Hearty Stock", 35, 10, {
       target: "party",
       stat: "maxHp",
       op: "mul",
       value: 1.05,
     }),
-    node("pt_dmg", "Battle Drills", 100, 10, {
+    node("pt_dmg", "Battle Drills", 45, 10, {
       target: "party",
       stat: "attack",
       op: "mul",

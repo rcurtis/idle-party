@@ -17,7 +17,7 @@ function simulate(run: RunState, autoCast = true, maxSeconds = 600): RunState {
   return run;
 }
 
-/** A maxed-out save: full roster, generous gold, Iron Wall unlocked. */
+/** A maxed-out save: full roster, generous gold, solid defensive investment. */
 function strongSave(): SaveState {
   let s = newSave();
   s = { ...s, gold: 100000, sigils: 5 };
@@ -26,8 +26,18 @@ function strongSave(): SaveState {
     expect(r.ok).toBe(true);
     if (r.ok) s = r.save;
   }
-  const iw = purchaseNode(s, "kn_ironwall");
-  if (iw.ok) s = iw.save;
+  // Tank + healer need real investment now that the base Knight is fragile.
+  const buys = [
+    "kn_hp", "kn_hp", "kn_hp", "kn_hp", "kn_hp", "kn_hp",
+    "kn_armor", "kn_armor", "kn_armor",
+    "kn_ironwall",
+    "cl_heal", "cl_heal", "cl_heal", "cl_heal",
+    "cl_hp", "cl_hp",
+  ];
+  for (const id of buys) {
+    const r = purchaseNode(s, id);
+    if (r.ok) s = r.save;
+  }
   return s;
 }
 
@@ -77,7 +87,7 @@ describe("economy: recruiting", () => {
     expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.save.roster).toContain("ranger");
-      expect(r.save.gold).toBe(110);
+      expect(r.save.gold).toBe(140); // 200 - 60
     }
   });
 
@@ -175,13 +185,25 @@ describe("combat", () => {
     expect(a.levelIndex).toBe(b.levelIndex);
   });
 
-  it("a no-upgrade lone knight wipes before reaching the first boss", () => {
-    // Without Iron Wall (locked) or any upgrades, the tank takes full damage
-    // and dies — a player must invest before they can reach the boss.
+  it("a no-upgrade lone knight wipes early in the first level", () => {
+    // The fragile base tank should die quickly with zero investment, forcing
+    // the player to buy upgrades before they can progress.
     const run = simulate(startRun(newSave(), "catacombs", 7));
     expect(run.phase).toBe("wiped");
-    expect(run.levelIndex).toBeLessThan(4); // never reaches the boss (level 5)
-    expect(run.goldEarned).toBeGreaterThan(0); // but earns gold to invest with
+    expect(run.levelIndex).toBeLessThanOrEqual(1); // nowhere near the boss
+    expect(run.goldEarned).toBeGreaterThan(0); // but earns a little to invest
+  });
+
+  it("cheap HP upgrades let the knight progress further", () => {
+    const bare = simulate(startRun(newSave(), "catacombs", 7));
+    let s = newSave();
+    for (let i = 0; i < 4; i++) {
+      const r = purchaseNode({ ...s, gold: 1000 }, "kn_hp");
+      if (r.ok) s = r.save;
+    }
+    const upgraded = simulate(startRun(s, "catacombs", 7));
+    // More HP => survives longer => earns strictly more gold before wiping.
+    expect(upgraded.goldEarned).toBeGreaterThan(bare.goldEarned);
   });
 
   it("Iron Wall is locked until its node is purchased", () => {
@@ -189,7 +211,11 @@ describe("combat", () => {
     const lockedKnight = buildParty(base).find((c) => c.classId === "knight")!;
     expect(lockedKnight.abilityUnlocked).toBe(false);
 
-    const r = purchaseNode({ ...base, gold: 1000 }, "kn_ironwall");
+    // Iron Wall requires Thick Hide (kn_hp) first.
+    let s = base;
+    const pre = purchaseNode({ ...s, gold: 1000 }, "kn_hp");
+    if (pre.ok) s = pre.save;
+    const r = purchaseNode(s, "kn_ironwall");
     expect(r.ok).toBe(true);
     if (r.ok) {
       const knight = buildParty(r.save).find((c) => c.classId === "knight")!;

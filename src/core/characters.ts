@@ -22,12 +22,12 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     role: "tank",
     starter: true,
     recruitCost: 0,
-    blurb: "Holds the front line. High HP, draws enemy aggression. You start with the Knight.",
+    blurb: "Holds the front line, draws enemy aggression. Fragile until you invest in him. You start with the Knight.",
     base: stats({
-      maxHp: 260,
-      attack: 7,
-      attackInterval: 1.6,
-      armor: 0.35,
+      maxHp: 90,
+      attack: 8,
+      attackInterval: 1.5,
+      armor: 0.12,
       threat: 4,
     }),
     ability: {
@@ -43,7 +43,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     name: "Ranger",
     role: "dps",
     starter: false,
-    recruitCost: 90,
+    recruitCost: 60,
     blurb: "Steady single-target arrows. Your first recruit — adds the damage your Knight lacks.",
     base: stats({
       maxHp: 80,
