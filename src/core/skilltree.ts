@@ -143,12 +143,14 @@ const arcane: SkillWing = {
       op: "add",
       value: 6,
     }),
-    node("mg_ability", "Empowered Nukes", 70, 5, {
-      target: "mage",
-      stat: "abilityPower",
-      op: "mul",
-      value: 1.15,
-    }),
+    node(
+      "mg_ability",
+      "Empowered Nukes",
+      70,
+      5,
+      { target: "mage", stat: "abilityPower", op: "mul", value: 1.15 },
+      ["mg_dmg"],
+    ),
     node(
       "mg_cd",
       "Mental Clarity",
@@ -172,12 +174,14 @@ const affliction: SkillWing = {
       op: "add",
       value: 4,
     }),
-    node("wl_ability", "Deeper Curse", 60, 6, {
-      target: "warlock",
-      stat: "abilityPower",
-      op: "mul",
-      value: 1.18,
-    }),
+    node(
+      "wl_ability",
+      "Deeper Curse",
+      60,
+      6,
+      { target: "warlock", stat: "abilityPower", op: "mul", value: 1.18 },
+      ["wl_dmg"],
+    ),
     node(
       "wl_cd",
       "Rapid Hexes",
@@ -200,12 +204,14 @@ const warband: SkillWing = {
       op: "mul",
       value: 1.05,
     }),
-    node("pt_dmg", "Battle Drills", 45, 10, {
-      target: "party",
-      stat: "attack",
-      op: "mul",
-      value: 1.04,
-    }),
+    node(
+      "pt_dmg",
+      "Battle Drills",
+      45,
+      10,
+      { target: "party", stat: "attack", op: "mul", value: 1.04 },
+      ["pt_hp"],
+    ),
   ],
 };
 

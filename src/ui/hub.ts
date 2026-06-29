@@ -160,10 +160,15 @@ export function renderHub(app: App): HTMLElement {
       }
     }
 
+    // Lock badge + dimmed portrait for not-yet-unlocked recruits / wing gates.
+    const showLock = (node.recruit || node.unlockWing) && !st.owned;
+    if (showLock) children.push(el("span", { class: "gnode-lock" }, ["🔒"]));
+    const lockClass = node.recruit && !st.owned ? " recruit-locked" : "";
+
     const gnode = el(
       "div",
       {
-        class: `gnode fam-${fam} state-${state}`,
+        class: `gnode fam-${fam} state-${state}${lockClass}`,
         style: `left:${node.pos.x - NODE / 2}px; top:${node.pos.y - NODE / 2}px`,
         onclick: () => app.buyNode(node.id),
         onmouseenter: () => showTip(tip, node, wing.id, st),

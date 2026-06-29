@@ -1,6 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { newSave, serialize, deserialize, migrate } from "./save";
-import { recruit, purchaseNode, nodeCost, unlockWing, canPurchase } from "./economy";
+import {
+  recruit,
+  purchaseNode,
+  nodeCost,
+  unlockWing,
+  canPurchase,
+  nodeStatus,
+  buyNode,
+} from "./economy";
 import { resolveStats } from "./stats";
 import { startRun, stepRun, manualCast, buildParty } from "./combat";
 import { bankRun } from "./game";
@@ -148,7 +156,9 @@ describe("economy: skill nodes", () => {
   it("cannot exceed max ranks", () => {
     let s = newSave();
     s.gold = 1000000;
-    // pt_dmg is a party node with maxRanks 10
+    // pt_dmg (party, maxRanks 10) now requires pt_hp first.
+    const ph = purchaseNode(s, "pt_hp");
+    if (ph.ok) s = ph.save;
     for (let i = 0; i < 10; i++) {
       const r = purchaseNode(s, "pt_dmg");
       expect(r.ok).toBe(true);
@@ -172,6 +182,37 @@ describe("economy: sigil-locked wings", () => {
       expect(u2.save.sigils).toBe(0);
       expect(canPurchase(u2.save, "as_dmg")).toBe(true);
     }
+  });
+});
+
+describe("skill graph gating", () => {
+  it("recruits unlock sequentially down the spine", () => {
+    const s = newSave();
+    expect(nodeStatus(s, "rec_ranger").available).toBe(true);
+    expect(nodeStatus(s, "rec_cleric").available).toBe(false);
+    const r = buyNode({ ...s, gold: 1000 }, "rec_ranger");
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(nodeStatus(r.save, "rec_cleric").available).toBe(true);
+  });
+
+  it("child upgrade nodes are locked until their parent is purchased", () => {
+    let s: SaveState = { ...newSave(), gold: 100000 };
+    for (const id of ["rec_ranger", "rec_cleric", "rec_mage"]) {
+      const r = buyNode(s, id);
+      if (r.ok) s = r.save;
+    }
+    expect(s.roster).toContain("mage");
+    expect(nodeStatus(s, "mg_dmg").available).toBe(true);
+    expect(nodeStatus(s, "mg_ability").available).toBe(false); // needs mg_dmg
+    const r = buyNode(s, "mg_dmg");
+    if (r.ok) s = r.save;
+    expect(nodeStatus(s, "mg_ability").available).toBe(true);
+  });
+
+  it("buyNode refuses a locked node", () => {
+    const s = { ...newSave(), gold: 100000 };
+    expect(buyNode(s, "rec_cleric").ok).toBe(false); // ranger not recruited
+    expect(buyNode(s, "mg_dmg").ok).toBe(false); // mage not recruited
   });
 });
 

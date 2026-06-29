@@ -384,6 +384,21 @@ svg.wires {
 .gnode.state-buyable {
   box-shadow: 0 0 9px rgba(255, 206, 92, 0.7);
 }
+.gnode-lock {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 10px;
+  line-height: 1;
+  background: #120d1f;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  padding: 2px 3px;
+}
+.gnode.recruit-locked .gnode-icon {
+  opacity: 0.4;
+  filter: grayscale(0.65);
+}
 .node-tip {
   position: absolute;
   transform: translate(-50%, -100%);

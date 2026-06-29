@@ -29,7 +29,12 @@ export function nodeStatus(save: SaveState, nodeId: string): NodeStatus {
   if (node.recruit) {
     const owned = save.roster.includes(node.recruit);
     const cost = getClass(node.recruit).recruitCost;
-    const available = !owned && !getClass(node.recruit).starter;
+    // Sequential gating: the previous class on the spine must be recruited.
+    const predOk = (node.links ?? [])
+      .map((id) => getNode(id))
+      .filter((p) => p.recruit)
+      .every((p) => getClass(p.recruit!).starter || save.roster.includes(p.recruit!));
+    const available = !owned && !getClass(node.recruit).starter && predOk;
     return {
       kind: "recruit",
       ranks: owned ? 1 : 0,
@@ -79,6 +84,10 @@ export function nodeStatus(save: SaveState, nodeId: string): NodeStatus {
 /** Unified click action for a graph node: recruit, unlock wing, or buy a rank. */
 export function buyNode(save: SaveState, nodeId: string): EconResult {
   const node = getNode(nodeId);
+  // Gate everything on the node being reachable (parent unlocked / prereqs met).
+  if (!nodeStatus(save, nodeId).available) {
+    return { ok: false, reason: "Locked." };
+  }
   if (node.recruit) return recruit(save, node.recruit);
   if (node.unlockWing) return unlockWing(save, node.unlockWing);
   return purchaseNode(save, nodeId);
