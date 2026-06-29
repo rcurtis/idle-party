@@ -8,8 +8,9 @@ import {
   GRAPH_H,
   allNodes,
   getWing,
+  getNode,
 } from "../core/skilltree";
-import type { ClassId, SkillNode, StatKey } from "../core/types";
+import type { ClassId, SaveState, SkillNode, StatKey } from "../core/types";
 import { el, svgEl, fmt } from "./dom";
 
 const NODE = 54; // node box size (px)
@@ -171,7 +172,8 @@ export function renderHub(app: App): HTMLElement {
         class: `gnode fam-${fam} state-${state}${lockClass}`,
         style: `left:${node.pos.x - NODE / 2}px; top:${node.pos.y - NODE / 2}px`,
         onclick: () => app.buyNode(node.id),
-        onmouseenter: () => showTip(tip, node, wing.id, st),
+        onmouseenter: (e: Event) =>
+          showTip(tip, e.currentTarget as HTMLElement, node, wing.id, st, save),
         onmouseleave: () => tip.classList.add("hidden"),
       },
       children,
@@ -182,9 +184,10 @@ export function renderHub(app: App): HTMLElement {
   const graph = el("div", { class: "graph", style: `width:${GRAPH_W}px; height:${GRAPH_H}px` }, [
     wires as unknown as Node,
     ...nodeEls,
-    tip,
   ]);
-  const graphWrap = el("div", { class: "graph-wrap" }, [graph]);
+  // Tooltip lives in the (unscaled) wrapper so positioning isn't affected by
+  // the graph's scale transform.
+  const graphWrap = el("div", { class: "graph-wrap" }, [graph, tip]);
 
   // --- Footer (settings) ---
   const footer = el("footer", { class: "hub-footer" }, [
@@ -234,9 +237,11 @@ export function renderHub(app: App): HTMLElement {
 
 function showTip(
   tip: HTMLElement,
+  gnodeEl: HTMLElement,
   node: SkillNode,
   wingId: string,
   st: ReturnType<typeof nodeStatus>,
+  save: SaveState,
 ): void {
   const lines: (Node | string)[] = [];
 
@@ -270,28 +275,51 @@ function showTip(
     lines.push(el("div", { class: "tip-eff" }, [effectText(node)]));
     let costLine = `Buy · ${fmt(st.cost)}🪙`;
     if (st.maxed) costLine = "✓ Maxed";
-    else if (!st.available) costLine = lockReason(node, wingId, st);
+    else if (!st.available) costLine = lockReason(node, wingId, save);
     lines.push(el("div", { class: "tip-cost" }, [costLine]));
   }
 
   tip.replaceChildren(...lines);
-  if (node.pos) {
-    tip.style.left = `${node.pos.x}px`;
-    tip.style.top = `${node.pos.y - NODE / 2 - 8}px`;
+
+  // Position relative to the unscaled wrapper using the node's real on-screen
+  // rect (so the graph's scale transform is accounted for). Flip below near the
+  // top edge and clamp horizontally so edge nodes stay fully readable.
+  tip.classList.remove("hidden"); // unhide first so we can measure its height
+  const wrap = tip.parentElement;
+  if (wrap) {
+    const nr = gnodeEl.getBoundingClientRect();
+    const wr = wrap.getBoundingClientRect();
+    const cx = nr.left - wr.left + nr.width / 2;
+    const top = nr.top - wr.top;
+    const bottom = nr.bottom - wr.top;
+    // Flip below the node when there isn't room for the tooltip above it.
+    const below = top < tip.offsetHeight + 12;
+    const halfW = 90;
+    tip.classList.toggle("tip-below", below);
+    tip.style.left = `${Math.max(halfW, Math.min(wrap.clientWidth - halfW, cx))}px`;
+    tip.style.top = `${below ? bottom + 8 : top - 8}px`;
   }
-  tip.classList.remove("hidden");
 }
 
-function lockReason(
-  node: SkillNode,
-  wingId: string,
-  _st: ReturnType<typeof nodeStatus>,
-): string {
+function lockReason(node: SkillNode, wingId: string, save: SaveState): string {
   const wing = getWing(wingId);
-  if (wing.sigilCost > 0) return "🔒 Unlock this wing first";
+  if (wing.sigilCost > 0 && !save.unlockedWings.includes(wing.id)) {
+    return "🔒 Unlock this wing first";
+  }
   const cls = node.effect?.target ?? node.unlock?.target;
-  if (cls && cls !== "party") return `🔒 Recruit ${CLASSES[cls as ClassId].name} first`;
-  if (node.requires.length) return "🔒 Requires an earlier node";
+  if (
+    cls &&
+    cls !== "party" &&
+    !CLASSES[cls as ClassId].starter &&
+    !save.roster.includes(cls as ClassId)
+  ) {
+    return `🔒 Recruit ${CLASSES[cls as ClassId].name} first`;
+  }
+  // Otherwise it's gated behind a wired parent node that isn't unlocked yet.
+  const lockedParent = (node.links ?? [])
+    .map((id) => getNode(id))
+    .find((p) => !nodeStatus(save, p.id).owned);
+  if (lockedParent) return `🔒 Unlock ${lockedParent.name} first`;
   return "🔒 Locked";
 }
 
