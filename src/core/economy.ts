@@ -1,6 +1,6 @@
 import { getClass } from "./characters";
 import { getNode, getWing, getWingForNode } from "./skilltree";
-import type { ClassId, SaveState } from "./types";
+import type { ClassId, SaveState, SkillNode } from "./types";
 
 export type EconResult =
   | { ok: true; save: SaveState }
@@ -22,19 +22,32 @@ export interface NodeStatus {
   canBuy: boolean;
 }
 
+/** Is a node "unlocked" (recruited / wing-open / has >=1 rank)? */
+function isNodeOwned(save: SaveState, node: SkillNode): boolean {
+  if (node.recruit) {
+    return getClass(node.recruit).starter || save.roster.includes(node.recruit);
+  }
+  if (node.unlockWing) {
+    const w = getWing(node.unlockWing);
+    return w.sigilCost === 0 || save.unlockedWings.includes(w.id);
+  }
+  return (save.purchased[node.id] ?? 0) > 0;
+}
+
+/** Every wired parent of this node must be unlocked first. */
+function parentsUnlocked(save: SaveState, node: SkillNode): boolean {
+  return (node.links ?? []).every((id) => isNodeOwned(save, getNode(id)));
+}
+
 /** Resolve the current state of any graph node for rendering + interaction. */
 export function nodeStatus(save: SaveState, nodeId: string): NodeStatus {
   const node = getNode(nodeId);
+  const parentsOk = parentsUnlocked(save, node);
 
   if (node.recruit) {
     const owned = save.roster.includes(node.recruit);
     const cost = getClass(node.recruit).recruitCost;
-    // Sequential gating: the previous class on the spine must be recruited.
-    const predOk = (node.links ?? [])
-      .map((id) => getNode(id))
-      .filter((p) => p.recruit)
-      .every((p) => getClass(p.recruit!).starter || save.roster.includes(p.recruit!));
-    const available = !owned && !getClass(node.recruit).starter && predOk;
+    const available = !owned && !getClass(node.recruit).starter && parentsOk;
     return {
       kind: "recruit",
       ranks: owned ? 1 : 0,
@@ -51,6 +64,8 @@ export function nodeStatus(save: SaveState, nodeId: string): NodeStatus {
   if (node.unlockWing) {
     const wing = getWing(node.unlockWing);
     const owned = wing.sigilCost === 0 || save.unlockedWings.includes(wing.id);
+    // A wing reads as locked until its parent gate is open AND you can afford it.
+    const available = !owned && parentsOk && save.sigils >= wing.sigilCost;
     return {
       kind: "gate",
       ranks: owned ? 1 : 0,
@@ -59,15 +74,15 @@ export function nodeStatus(save: SaveState, nodeId: string): NodeStatus {
       maxed: owned,
       cost: wing.sigilCost,
       costKind: "sigil",
-      available: !owned,
-      canBuy: !owned && save.sigils >= wing.sigilCost,
+      available,
+      canBuy: available,
     };
   }
 
   const ranks = save.purchased[nodeId] ?? 0;
   const maxed = ranks >= node.maxRanks;
   const cost = nodeCost(save, nodeId);
-  const available = canPurchase(save, nodeId);
+  const available = canPurchase(save, nodeId) && parentsOk;
   return {
     kind: "stat",
     ranks,

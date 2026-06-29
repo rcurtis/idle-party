@@ -314,11 +314,11 @@ const LAYOUT: Record<string, { x: number; y: number; links?: string[] }> = {
   wl_dmg: { x: 235, y: 528, links: ["rec_warlock"] },
   wl_ability: { x: 380, y: 528, links: ["wl_dmg"] },
   wl_cd: { x: 520, y: 528, links: ["wl_ability"] },
-  // Warband (party) — central cluster
-  pt_hp: { x: 560, y: 120, links: ["kn_ironwall"] },
+  // Warband (party) — central cluster (always available; no parent gate)
+  pt_hp: { x: 560, y: 120 },
   pt_dmg: { x: 560, y: 184, links: ["pt_hp"] },
-  // Bulwark (locked)
-  gate_bulwark: { x: 700, y: 270, links: ["pt_dmg"] },
+  // Bulwark (locked) — Sigil-gated entry, no parent purchase
+  gate_bulwark: { x: 700, y: 270 },
   bw_armor: { x: 840, y: 235, links: ["gate_bulwark"] },
   bw_knhp: { x: 840, y: 300, links: ["gate_bulwark"] },
   bw_heal: { x: 975, y: 300, links: ["bw_knhp"] },
