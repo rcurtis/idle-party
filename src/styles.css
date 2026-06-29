@@ -401,6 +401,11 @@ canvas.scene {
 .ability-btn.dead {
   opacity: 0.35;
 }
+.ability-btn.locked {
+  opacity: 0.5;
+  border-style: dashed;
+  cursor: not-allowed;
+}
 .ab-icon {
   image-rendering: pixelated;
 }

@@ -32,6 +32,7 @@ export function resolveStats(classId: ClassId, save: SaveState): Stats {
       const ranks = save.purchased[n.id] ?? 0;
       if (ranks <= 0) continue;
       const eff = n.effect;
+      if (!eff) continue; // unlock-style node, no stat effect
       if (eff.target !== "party" && eff.target !== classId) continue;
       if (eff.op === "add") {
         adds[eff.stat] += eff.value * ranks;

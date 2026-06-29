@@ -47,6 +47,8 @@ export interface AbilityDef {
   kind: AbilityKind;
   /** Tuning magnitude; meaning depends on kind. */
   magnitude: number;
+  /** If set, the ability is locked until this skill node is purchased. */
+  requiresNode?: string;
 }
 
 /** A character instance the player owns (persistent, between runs). */
@@ -66,6 +68,8 @@ export interface Combatant {
   /** Seconds until ability ready (0 = ready). */
   abilityTimer: number;
   ability: AbilityDef;
+  /** False if the ability is gated behind an unpurchased skill node. */
+  abilityUnlocked: boolean;
   alive: boolean;
   /** Flat damage absorbed before HP (from taunt-shield). */
   shield: number;
@@ -135,8 +139,10 @@ export interface SkillNode {
   cost: number;
   /** Number of times this node can be purchased. */
   maxRanks: number;
-  /** Effect per rank. */
-  effect: NodeEffect;
+  /** Stat effect per rank. Omitted for unlock-style nodes. */
+  effect?: NodeEffect;
+  /** Unlock-style node (no stat effect): which class it belongs to + blurb. */
+  unlock?: { target: ClassId; desc: string };
   /** Node ids that must be purchased (>=1 rank) before this unlocks. */
   requires: string[];
 }

@@ -52,9 +52,11 @@ export function canPurchase(save: SaveState, nodeId: string): boolean {
   if (ranks >= node.maxRanks) return false;
   if (!wingUnlocked(save, getWingForNode(nodeId).id)) return false;
   // The targeted class must be recruited (party-target nodes always allowed).
-  if (node.effect.target !== "party" && !save.roster.includes(node.effect.target)) {
-    return false;
-  }
+  const reqClass =
+    node.effect && node.effect.target !== "party"
+      ? node.effect.target
+      : node.unlock?.target;
+  if (reqClass && !save.roster.includes(reqClass)) return false;
   return requirementsMet(save, nodeId);
 }
 

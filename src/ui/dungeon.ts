@@ -135,15 +135,22 @@ export class DungeonView {
       const btn = this.abilityBtns.get(c.classId);
       if (!btn) continue;
       const cd = btn.querySelector(".ab-cd") as HTMLElement;
-      const ready = c.alive && c.abilityTimer <= 0;
+      const locked = !c.abilityUnlocked;
+      const ready = c.alive && !locked && c.abilityTimer <= 0;
       btn.classList.toggle("ready", ready);
       btn.classList.toggle("dead", !c.alive);
+      btn.classList.toggle("locked", locked);
       btn.disabled = !ready;
-      cd.textContent = c.alive
-        ? c.abilityTimer > 0
-          ? c.abilityTimer.toFixed(1)
-          : "●"
-        : "✖";
+      btn.title = locked
+        ? `${c.name}: ${c.ability.name} — unlock in the skill tree`
+        : `${c.name}: ${c.ability.name}`;
+      cd.textContent = !c.alive
+        ? "✖"
+        : locked
+          ? "🔒"
+          : c.abilityTimer > 0
+            ? c.abilityTimer.toFixed(1)
+            : "●";
     }
 
     // Log (last few lines).

@@ -20,7 +20,15 @@ function targetLabel(t: ClassId | "party"): string {
   return t === "party" ? "Party" : CLASSES[t].name;
 }
 
+/** Class a node belongs to (from its effect or unlock metadata), if any. */
+function nodeTarget(node: SkillNode): ClassId | "party" | null {
+  if (node.effect) return node.effect.target;
+  if (node.unlock) return node.unlock.target;
+  return null;
+}
+
 function describeEffect(node: SkillNode): string {
+  if (!node.effect) return node.unlock?.desc ?? "";
   const e = node.effect;
   const who = targetLabel(e.target);
   if (e.op === "add") {
@@ -68,13 +76,13 @@ export function renderSkillTree(app: App): HTMLElement {
       const cost = nodeCost(save, node.id);
       const available = canPurchase(save, node.id);
       const affordable = save.gold >= cost;
+      const target = nodeTarget(node);
       const needsClass =
-        node.effect.target !== "party" &&
-        !save.roster.includes(node.effect.target);
+        target !== null && target !== "party" && !save.roster.includes(target);
 
       let hint = "";
       if (isLocked) hint = "Wing locked";
-      else if (needsClass) hint = `Recruit ${targetLabel(node.effect.target)} first`;
+      else if (needsClass) hint = `Recruit ${targetLabel(target!)} first`;
       else if (node.requires.length && !available && !maxed)
         hint = "Requires earlier node";
 
@@ -88,7 +96,9 @@ export function renderSkillTree(app: App): HTMLElement {
           ]),
           el("div", { class: "node-eff" }, [describeEffect(node)]),
           maxed
-            ? el("div", { class: "node-maxed" }, ["MAX"])
+            ? el("div", { class: "node-maxed" }, [
+                node.unlock ? "✓ Unlocked" : "MAX",
+              ])
             : el(
                 "button",
                 {

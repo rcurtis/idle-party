@@ -17,7 +17,7 @@ function simulate(run: RunState, autoCast = true, maxSeconds = 600): RunState {
   return run;
 }
 
-/** A maxed-out save: full roster, generous gold. */
+/** A maxed-out save: full roster, generous gold, Iron Wall unlocked. */
 function strongSave(): SaveState {
   let s = newSave();
   s = { ...s, gold: 100000, sigils: 5 };
@@ -26,6 +26,8 @@ function strongSave(): SaveState {
     expect(r.ok).toBe(true);
     if (r.ok) s = r.save;
   }
+  const iw = purchaseNode(s, "kn_ironwall");
+  if (iw.ok) s = iw.save;
   return s;
 }
 
@@ -173,22 +175,35 @@ describe("combat", () => {
     expect(a.levelIndex).toBe(b.levelIndex);
   });
 
-  it("a lone starter knight survives but is too slow to clear quickly", () => {
-    // The tank is hard to kill, so in a short budget it neither wins nor wipes —
-    // it grinds. It still banks gold, which the player spends to recruit a DPS.
-    const run = simulate(startRun(newSave(), "catacombs", 7), true, 120);
-    expect(run.phase).not.toBe("won");
-    expect(run.goldEarned).toBeGreaterThan(0);
+  it("a no-upgrade lone knight wipes before reaching the first boss", () => {
+    // Without Iron Wall (locked) or any upgrades, the tank takes full damage
+    // and dies — a player must invest before they can reach the boss.
+    const run = simulate(startRun(newSave(), "catacombs", 7));
+    expect(run.phase).toBe("wiped");
+    expect(run.levelIndex).toBeLessThan(4); // never reaches the boss (level 5)
+    expect(run.goldEarned).toBeGreaterThan(0); // but earns gold to invest with
   });
 
-  it("recruiting the ranger clears a budget the lone knight can't", () => {
-    let duo = newSave();
-    const r = recruit({ ...duo, gold: 1000 }, "ranger");
-    if (r.ok) duo = r.save;
-    const solo = simulate(startRun(newSave(), "catacombs", 7), true, 400);
-    const pair = simulate(startRun(duo, "catacombs", 7), true, 400);
-    expect(solo.phase).not.toBe("won"); // lone tank too slow within 400s
-    expect(pair.phase).toBe("won"); // +1 DPS recruit clears it
+  it("Iron Wall is locked until its node is purchased", () => {
+    const base = newSave();
+    const lockedKnight = buildParty(base).find((c) => c.classId === "knight")!;
+    expect(lockedKnight.abilityUnlocked).toBe(false);
+
+    const r = purchaseNode({ ...base, gold: 1000 }, "kn_ironwall");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      const knight = buildParty(r.save).find((c) => c.classId === "knight")!;
+      expect(knight.abilityUnlocked).toBe(true);
+    }
+  });
+
+  it("a no-upgrade knight casting Iron Wall is a no-op (locked)", () => {
+    const run = startRun(newSave(), "catacombs", 1);
+    const knight = run.party.find((c) => c.classId === "knight")!;
+    knight.abilityTimer = 0;
+    manualCast(run, "knight");
+    expect(knight.shield).toBe(0); // no shield gained
+    expect(knight.abilityTimer).toBe(0); // ability never fired
   });
 
   it("a strong full party can clear the catacombs and earn a sigil", () => {

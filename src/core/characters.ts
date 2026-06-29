@@ -30,7 +30,13 @@ export const CLASSES: Record<ClassId, ClassDef> = {
       armor: 0.35,
       threat: 4,
     }),
-    ability: { id: "taunt", name: "Iron Wall", kind: "taunt", magnitude: 0.6 },
+    ability: {
+      id: "taunt",
+      name: "Iron Wall",
+      kind: "taunt",
+      magnitude: 0.6,
+      requiresNode: "kn_ironwall",
+    },
   },
   ranger: {
     id: "ranger",

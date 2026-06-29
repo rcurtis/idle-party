@@ -38,6 +38,9 @@ export function buildParty(save: SaveState): Combatant[] {
       atkTimer: stats.attackInterval,
       abilityTimer: stats.abilityCooldown,
       ability: def.ability,
+      abilityUnlocked:
+        !def.ability.requiresNode ||
+        (save.purchased[def.ability.requiresNode] ?? 0) > 0,
       alive: true,
       shield: 0,
     };
@@ -324,7 +327,7 @@ function shouldAutoCast(run: RunState, c: Combatant): boolean {
 export function manualCast(run: RunState, classId: string): RunState {
   if (run.phase !== "fighting") return run;
   const c = run.party.find((m) => m.classId === classId && m.alive);
-  if (!c || c.abilityTimer > 0) return run;
+  if (!c || !c.abilityUnlocked || c.abilityTimer > 0) return run;
   if (castAbilityFor(run, c)) {
     c.abilityTimer = c.stats.abilityCooldown;
   }
@@ -354,7 +357,7 @@ export function stepRun(run: RunState, dt: number, opts: StepOpts): RunState {
     if (!c.alive) continue;
     c.atkTimer -= dt;
     c.abilityTimer = Math.max(0, c.abilityTimer - dt);
-    if (opts.autoCast && shouldAutoCast(run, c)) {
+    if (opts.autoCast && c.abilityUnlocked && shouldAutoCast(run, c)) {
       if (castAbilityFor(run, c)) c.abilityTimer = c.stats.abilityCooldown;
     }
   }

@@ -1,14 +1,25 @@
-import type { SkillNode, SkillWing } from "./types";
+import type { ClassId, NodeEffect, SkillNode, SkillWing } from "./types";
 
 function node(
   id: string,
   name: string,
   cost: number,
   maxRanks: number,
-  effect: SkillNode["effect"],
+  effect: NodeEffect,
   requires: string[] = [],
 ): SkillNode {
   return { id, name, cost, maxRanks, effect, requires };
+}
+
+/** A one-time node that unlocks a character ability rather than boosting a stat. */
+function unlockNode(
+  id: string,
+  name: string,
+  cost: number,
+  unlock: { target: ClassId; desc: string },
+  requires: string[] = [],
+): SkillNode {
+  return { id, name, cost, maxRanks: 1, unlock, requires };
 }
 
 // Open-from-start wings (one per class + a shared party wing).
@@ -46,6 +57,10 @@ const vanguard: SkillWing = {
   name: "Vanguard (Knight)",
   sigilCost: 0,
   nodes: [
+    unlockNode("kn_ironwall", "Iron Wall", 80, {
+      target: "knight",
+      desc: "Unlocks Iron Wall: the Knight gains a damage-absorbing shield on cooldown.",
+    }),
     node("kn_hp", "Thick Hide", 50, 10, {
       target: "knight",
       stat: "maxHp",

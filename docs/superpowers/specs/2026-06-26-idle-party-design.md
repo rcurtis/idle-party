@@ -62,9 +62,9 @@ with gold, in order: Ranger (first DPS) → Cleric (healer) → Mage → Warlock
 
 | Class   | Role  | Niche                                  |
 |---------|-------|----------------------------------------|
-| Knight  | Tank  | High HP, generates threat, taunt-shield ability |
+| Knight  | Tank  | High HP, generates threat (starter); Iron Wall shield is an unlockable upgrade |
 | Cleric  | Healer| Heals lowest-HP ally; big-heal ability |
-| Ranger  | DPS   | Sustained single-target (starter)      |
+| Ranger  | DPS   | Sustained single-target (first recruit) |
 | Mage    | DPS   | Burst nuke ability, AoE leanings       |
 | Warlock | DPS   | Damage-over-time stacks                 |
 
