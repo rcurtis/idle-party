@@ -1,0 +1,474 @@
+/* Idle Party — game UI styles. Dark fantasy tavern palette. */
+
+#app {
+  width: 100%;
+  max-width: 860px;
+  padding: 0 0 40px;
+}
+
+.screen {
+  display: block;
+}
+
+/* ---- Top bar ---- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border-bottom: 2px solid var(--border);
+}
+.brand {
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+.currencies {
+  display: flex;
+  gap: 14px;
+  margin-left: auto;
+  font-size: 15px;
+}
+.coin-amt {
+  color: var(--gold);
+}
+.sigil-amt {
+  color: var(--sigil);
+}
+.topbar nav {
+  display: flex;
+  gap: 6px;
+}
+.nav-btn {
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.nav-btn.active,
+.nav-btn:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+/* ---- Generic ---- */
+h2 {
+  font-size: 16px;
+  margin: 18px 0 8px;
+  color: var(--ink);
+  border-left: 3px solid var(--accent);
+  padding-left: 8px;
+}
+.section-hint,
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+.tavern-body,
+.tree-body {
+  padding: 12px 16px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.card-grid.dungeons {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---- Unit cards ---- */
+.unit-card {
+  display: flex;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  align-items: flex-start;
+}
+.unit-card.role-tank {
+  border-left: 3px solid #6fa8ff;
+}
+.unit-card.role-healer {
+  border-left: 3px solid var(--good);
+}
+.unit-card.role-dps {
+  border-left: 3px solid var(--danger);
+}
+.card-icon {
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+  background: #1a1326;
+  border-radius: 6px;
+  padding: 2px;
+}
+.card-icon.dim {
+  opacity: 0.55;
+}
+.unit-info {
+  flex: 1;
+}
+.unit-name {
+  font-weight: bold;
+}
+.unit-role {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 2px 0;
+}
+.unit-role.tank {
+  color: #6fa8ff;
+}
+.unit-role.healer {
+  color: var(--good);
+}
+.unit-role.dps {
+  color: var(--danger);
+}
+.unit-blurb {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+.recruit-btn {
+  align-self: center;
+  background: var(--gold);
+  color: #2a1d00;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.recruit-btn.disabled,
+button.disabled,
+button:disabled {
+  filter: grayscale(0.7);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Dungeon cards ---- */
+.dungeon-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dungeon-card.locked {
+  opacity: 0.6;
+}
+.dungeon-name {
+  font-weight: bold;
+  font-size: 15px;
+}
+.beaten-tag {
+  color: var(--good);
+  font-size: 12px;
+}
+.dungeon-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+.locked-hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+.primary-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.primary-btn:hover {
+  filter: brightness(1.1);
+}
+.ghost-btn {
+  background: var(--panel-light);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.ghost-btn.danger {
+  color: var(--danger);
+}
+
+.tavern-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.toggle {
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- Skill tree ---- */
+.wing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.wing {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+.wing.locked {
+  border-style: dashed;
+  border-color: var(--sigil);
+}
+.wing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.wing-header h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.unlock-btn {
+  background: var(--sigil);
+  color: #03212c;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.wing-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.node {
+  background: var(--panel-light);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 9px;
+}
+.node.dim {
+  opacity: 0.5;
+}
+.node.maxed {
+  border-color: var(--good);
+}
+.node-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: bold;
+}
+.node-rank {
+  color: var(--muted);
+  font-weight: normal;
+}
+.node-eff {
+  font-size: 12px;
+  color: var(--gold);
+  margin: 3px 0 6px;
+}
+.buy-btn {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.node-maxed {
+  text-align: center;
+  color: var(--good);
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* ---- Dungeon run screen ---- */
+.dungeon-screen {
+  padding: 12px 16px;
+}
+.dungeon-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.scene-wrap {
+  position: relative;
+  width: 100%;
+}
+canvas.scene {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  display: block;
+}
+.run-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+.run-stat {
+  font-size: 14px;
+  padding: 4px 8px;
+  background: var(--panel);
+  border-radius: 6px;
+}
+.run-stat.gold {
+  color: var(--gold);
+}
+.spacer {
+  flex: 1;
+}
+.speed-btn {
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.speed-btn.active {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.flee {
+  color: var(--danger);
+}
+
+.ability-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.ability-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  min-width: 64px;
+}
+.ability-btn.ready {
+  border-color: var(--gold);
+  box-shadow: 0 0 6px rgba(255, 206, 92, 0.5);
+}
+.ability-btn.dead {
+  opacity: 0.35;
+}
+.ab-icon {
+  image-rendering: pixelated;
+}
+.ab-cd {
+  font-size: 12px;
+  color: var(--gold);
+  min-height: 14px;
+}
+.ab-name {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.run-log {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  height: 110px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: 12px;
+}
+.log-line {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ---- Results overlay ---- */
+.results-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 7, 18, 0.78);
+  border-radius: 8px;
+}
+.results-overlay.hidden {
+  display: none;
+}
+.results-card {
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px 28px;
+  text-align: center;
+  max-width: 440px;
+}
+.results-card h2 {
+  border: none;
+  padding: 0;
+  font-size: 22px;
+}
+.results-card h2.win {
+  color: var(--good);
+}
+.results-card h2.lose {
+  color: var(--danger);
+}
+.results-card .sigil {
+  color: var(--sigil);
+}
+.results-card .unlock {
+  color: var(--gold);
+  font-weight: bold;
+}
+.result-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+}

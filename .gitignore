@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.inspect/
+*.local
+.DS_Store
+# Vite / TS caches
+.vite/
+*.tsbuildinfo
+# Tauri (when added)
+src-tauri/target/
+# Editor / tooling
+.claude/
+.vscode/
+.idea/

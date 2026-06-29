@@ -1,0 +1,21 @@
+{
+  "name": "idle-party",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Idle/incremental pixel-art party dungeon crawler",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "gen:art": "node scripts/gen-art.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8",
+    "pngjs": "^7.0.0"
+  }
+}

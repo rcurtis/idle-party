@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Idle Party</title>
+    <style>
+      :root {
+        --bg: #14101a;
+        --panel: #221a2e;
+        --panel-light: #2e2440;
+        --ink: #e8e0f0;
+        --muted: #9a8fb0;
+        --gold: #ffce5c;
+        --sigil: #6fd3ff;
+        --accent: #b66cff;
+        --danger: #ff5c6c;
+        --good: #6fff97;
+        --border: #443a5a;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: ui-monospace, "Cascadia Mono", "Consolas", monospace;
+        -webkit-font-smoothing: none;
+      }
+      #app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      canvas { image-rendering: pixelated; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
