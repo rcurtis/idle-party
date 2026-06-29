@@ -18,8 +18,9 @@ Runs in any browser and is structured to package as a desktop app via Tauri.
    boss unlocks the next dungeon.
 4. **Spend & repeat** — push the skill tree, unlock Sigil-gated wings, go deeper.
 
-You start with only the **Ranger**. The Knight, Cleric, Mage, and Warlock must
-be recruited with gold — building the party *is* part of the progression.
+You start with only the **Knight** (your tank). Recruit the **Ranger** first
+(your first damage dealer), then the **Cleric** (healer), then the **Mage** and
+**Warlock** — building the party *is* part of the progression.
 
 ## Run it
 

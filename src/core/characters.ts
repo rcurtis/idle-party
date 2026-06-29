@@ -16,28 +16,13 @@ function stats(overrides: Partial<Stats>): Stats {
 }
 
 export const CLASSES: Record<ClassId, ClassDef> = {
-  ranger: {
-    id: "ranger",
-    name: "Ranger",
-    role: "dps",
-    starter: true,
-    recruitCost: 0,
-    blurb: "Steady single-target arrows. Your first recruit.",
-    base: stats({
-      maxHp: 80,
-      attack: 14,
-      attackInterval: 1.1,
-      armor: 0.02,
-    }),
-    ability: { id: "volley", name: "Volley", kind: "volley", magnitude: 2.2 },
-  },
   knight: {
     id: "knight",
     name: "Knight",
     role: "tank",
-    starter: false,
-    recruitCost: 120,
-    blurb: "Holds the front line. High HP, draws enemy aggression.",
+    starter: true,
+    recruitCost: 0,
+    blurb: "Holds the front line. High HP, draws enemy aggression. You start with the Knight.",
     base: stats({
       maxHp: 260,
       attack: 7,
@@ -47,12 +32,27 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     }),
     ability: { id: "taunt", name: "Iron Wall", kind: "taunt", magnitude: 0.6 },
   },
+  ranger: {
+    id: "ranger",
+    name: "Ranger",
+    role: "dps",
+    starter: false,
+    recruitCost: 90,
+    blurb: "Steady single-target arrows. Your first recruit — adds the damage your Knight lacks.",
+    base: stats({
+      maxHp: 80,
+      attack: 14,
+      attackInterval: 1.1,
+      armor: 0.02,
+    }),
+    ability: { id: "volley", name: "Volley", kind: "volley", magnitude: 2.2 },
+  },
   cleric: {
     id: "cleric",
     name: "Cleric",
     role: "healer",
     starter: false,
-    recruitCost: 200,
+    recruitCost: 220,
     blurb: "Keeps the party standing. Heals the most wounded ally.",
     base: stats({
       maxHp: 110,
@@ -98,11 +98,13 @@ export const CLASSES: Record<ClassId, ClassDef> = {
   },
 };
 
-export const STARTER_CLASS: ClassId = "ranger";
+export const STARTER_CLASS: ClassId = "knight";
 
+// Order here drives the tavern recruit list: Ranger first, then the Healer,
+// then the remaining DPS. (The Knight is the starter and is filtered out.)
 export const ALL_CLASS_IDS: ClassId[] = [
-  "ranger",
   "knight",
+  "ranger",
   "cleric",
   "mage",
   "warlock",

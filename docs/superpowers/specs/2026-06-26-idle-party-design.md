@@ -57,7 +57,8 @@ and dispatch actions. Core never imports from render/ui.
 
 ### Characters
 
-Five classes; the player starts with the Ranger only and recruits the rest with gold.
+Five classes; the player starts with the Knight (tank) only and recruits the rest
+with gold, in order: Ranger (first DPS) → Cleric (healer) → Mage → Warlock.
 
 | Class   | Role  | Niche                                  |
 |---------|-------|----------------------------------------|
@@ -141,6 +142,6 @@ stats (`threat` for tank, `healPower` for healer, `abilityPower`, ability cooldo
 
 ## Milestone (this slice = full vertical slice)
 
-Start with Ranger → earn gold → recruit Knight/Cleric/Mage/Warlock → buy upgrades →
+Start with Knight → earn gold → recruit Ranger/Cleric/Mage/Warlock → buy upgrades →
 clear Dungeon 1 levels → beat D1 boss → receive Sigil → unlock a locked wing →
 unlock & enter Dungeon 2. Playable in browser via `npm run dev`.

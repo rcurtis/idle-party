@@ -86,6 +86,10 @@ export class App {
   }
 
   leaveRun(): void {
+    // Fleeing banks whatever gold was collected this run (same as a wipe),
+    // so the player can always cash out — important early when the lone tank
+    // is too tanky to die but too slow to clear.
+    if (this.run && !this.run.resolved) this.resolveRun();
     this.run = null;
     this.dungeonView = null;
     this.go("tavern");
