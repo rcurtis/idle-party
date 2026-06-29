@@ -120,6 +120,9 @@ button {
 }
 .unit-info {
   flex: 1;
+  min-width: 0; /* allow text to wrap instead of forcing the card wide/tall */
+  display: flex;
+  flex-direction: column;
 }
 .unit-name {
   font-weight: bold;
@@ -145,12 +148,13 @@ button {
   line-height: 1.35;
 }
 .recruit-btn {
-  align-self: center;
+  align-self: flex-start;
+  margin-top: 8px;
   background: var(--gold);
   color: #2a1d00;
   border: none;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-weight: bold;
   cursor: pointer;
   white-space: nowrap;

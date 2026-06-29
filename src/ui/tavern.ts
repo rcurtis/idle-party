@@ -42,19 +42,19 @@ export function renderTavern(app: App): HTMLElement {
         el("div", { class: "unit-name" }, [def.name]),
         el("div", { class: `unit-role ${def.role}` }, [ROLE_LABEL[def.role]]),
         el("div", { class: "unit-blurb" }, [def.blurb]),
-      ]),
-      el(
-        "button",
-        {
-          class: "recruit-btn" + (affordable ? "" : " disabled"),
-          disabled: !affordable,
-          onclick: () => {
-            const r = recruit(app.save, id);
-            if (r.ok) app.setSave(r.save);
+        el(
+          "button",
+          {
+            class: "recruit-btn" + (affordable ? "" : " disabled"),
+            disabled: !affordable,
+            onclick: () => {
+              const r = recruit(app.save, id);
+              if (r.ok) app.setSave(r.save);
+            },
           },
-        },
-        [`Recruit · ${fmt(def.recruitCost)}🪙`],
-      ),
+          [`Recruit · ${fmt(def.recruitCost)}🪙`],
+        ),
+      ]),
     ]);
   });
 
