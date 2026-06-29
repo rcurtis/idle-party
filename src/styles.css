@@ -2,8 +2,14 @@
 
 #app {
   width: 100%;
-  max-width: 860px;
+  max-width: 1100px;
   padding: 0 0 40px;
+}
+/* Keep the dungeon run screen comfortably narrow & centered. */
+.dungeon-screen {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
 }
 
 .screen {
@@ -234,6 +240,249 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ---- Hub (node-graph) ---- */
+.screen.hub {
+  width: 100%;
+  align-self: stretch;
+}
+.hub-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 22px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.hub-topbar .currencies {
+  margin-left: auto;
+}
+.expedition-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: inherit;
+}
+.expedition-btn:hover {
+  filter: brightness(1.12);
+}
+.graph-wrap {
+  overflow: hidden;
+  padding: 10px 8px;
+}
+.graph {
+  position: relative;
+  margin: 0 auto;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0)
+      0 0 / 28px 28px,
+    radial-gradient(ellipse at 30% 40%, rgba(124, 92, 200, 0.06), transparent 60%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+svg.wires {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.wire {
+  stroke: #2f2a44;
+  stroke-width: 2;
+}
+.wire.lit {
+  stroke: #6a5a9a;
+}
+.gnode {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+.gnode:hover {
+  transform: scale(1.1);
+  z-index: 5;
+}
+.gnode-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gnode-label {
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+}
+.gnode-icon {
+  image-rendering: pixelated;
+}
+.gnode-pips {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.pip {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #4a4360;
+}
+.pip.on {
+  background: var(--gold);
+}
+.gnode-count {
+  font-size: 9px;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+/* node families (border colour) */
+.fam-tank {
+  border-color: #6fa8ff;
+}
+.fam-healer {
+  border-color: var(--good);
+}
+.fam-dps {
+  border-color: var(--danger);
+}
+.fam-party {
+  border-color: var(--gold);
+}
+.fam-locked {
+  border-color: var(--sigil);
+  border-style: dashed;
+}
+/* node states */
+.gnode.state-locked {
+  opacity: 0.32;
+  filter: grayscale(0.55);
+}
+.gnode.state-available {
+  opacity: 0.92;
+}
+.gnode.state-owned {
+  background: #241c38;
+}
+.gnode.state-buyable {
+  box-shadow: 0 0 9px rgba(255, 206, 92, 0.7);
+}
+.node-tip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  width: 168px;
+  background: #120d1f;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  padding: 7px 9px;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 30;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+.node-tip.hidden {
+  display: none;
+}
+.tip-title {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+.tip-rank {
+  color: var(--muted);
+  font-weight: normal;
+}
+.tip-eff {
+  color: var(--muted);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+.tip-cost {
+  color: var(--gold);
+  font-weight: bold;
+}
+.hub-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 22px;
+  border-top: 1px solid var(--border);
+}
+.hub-hint {
+  flex: 1;
+  color: var(--muted);
+  font-size: 12px;
+}
+.exp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 5, 14, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.exp-overlay.hidden {
+  display: none;
+}
+.exp-modal {
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  width: min(560px, 92vw);
+}
+.exp-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.exp-modal-head h2 {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+.exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.exp-card {
+  background: var(--panel-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.exp-card.locked {
+  opacity: 0.6;
+}
+.exp-name {
+  font-weight: bold;
+}
+.exp-meta {
+  color: var(--muted);
+  font-size: 12px;
 }
 
 /* ---- Skill tree ---- */

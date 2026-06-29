@@ -6,6 +6,84 @@ export type EconResult =
   | { ok: true; save: SaveState }
   | { ok: false; reason: string };
 
+/** UI-facing state for a graph node (recruit anchor, wing gate, or stat node). */
+export interface NodeStatus {
+  kind: "recruit" | "gate" | "stat";
+  ranks: number;
+  maxRanks: number;
+  /** ranks > 0 (stat), recruited (recruit), or wing-unlocked (gate). */
+  owned: boolean;
+  maxed: boolean;
+  cost: number;
+  costKind: "gold" | "sigil";
+  /** Unlockable right now ignoring affordability (prereqs/recruit/wing met). */
+  available: boolean;
+  /** Available AND affordable AND not maxed. */
+  canBuy: boolean;
+}
+
+/** Resolve the current state of any graph node for rendering + interaction. */
+export function nodeStatus(save: SaveState, nodeId: string): NodeStatus {
+  const node = getNode(nodeId);
+
+  if (node.recruit) {
+    const owned = save.roster.includes(node.recruit);
+    const cost = getClass(node.recruit).recruitCost;
+    const available = !owned && !getClass(node.recruit).starter;
+    return {
+      kind: "recruit",
+      ranks: owned ? 1 : 0,
+      maxRanks: 1,
+      owned,
+      maxed: owned,
+      cost,
+      costKind: "gold",
+      available,
+      canBuy: available && save.gold >= cost,
+    };
+  }
+
+  if (node.unlockWing) {
+    const wing = getWing(node.unlockWing);
+    const owned = wing.sigilCost === 0 || save.unlockedWings.includes(wing.id);
+    return {
+      kind: "gate",
+      ranks: owned ? 1 : 0,
+      maxRanks: 1,
+      owned,
+      maxed: owned,
+      cost: wing.sigilCost,
+      costKind: "sigil",
+      available: !owned,
+      canBuy: !owned && save.sigils >= wing.sigilCost,
+    };
+  }
+
+  const ranks = save.purchased[nodeId] ?? 0;
+  const maxed = ranks >= node.maxRanks;
+  const cost = nodeCost(save, nodeId);
+  const available = canPurchase(save, nodeId);
+  return {
+    kind: "stat",
+    ranks,
+    maxRanks: node.maxRanks,
+    owned: ranks > 0,
+    maxed,
+    cost,
+    costKind: "gold",
+    available,
+    canBuy: available && !maxed && save.gold >= cost,
+  };
+}
+
+/** Unified click action for a graph node: recruit, unlock wing, or buy a rank. */
+export function buyNode(save: SaveState, nodeId: string): EconResult {
+  const node = getNode(nodeId);
+  if (node.recruit) return recruit(save, node.recruit);
+  if (node.unlockWing) return unlockWing(save, node.unlockWing);
+  return purchaseNode(save, nodeId);
+}
+
 /** Recruit a class into the roster for its gold cost. */
 export function recruit(save: SaveState, classId: ClassId): EconResult {
   if (save.roster.includes(classId)) {

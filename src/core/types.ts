@@ -143,6 +143,14 @@ export interface SkillNode {
   effect?: NodeEffect;
   /** Unlock-style node (no stat effect): which class it belongs to + blurb. */
   unlock?: { target: ClassId; desc: string };
+  /** Recruit-anchor node: clicking recruits this class (cost = recruitCost in gold). */
+  recruit?: ClassId;
+  /** Gate node: clicking spends sigils to unlock the given wing. */
+  unlockWing?: string;
+  /** Authored graph position (center), in the hub's virtual coordinate space. */
+  pos?: { x: number; y: number };
+  /** Other node ids this node is wired to in the graph (visual links). */
+  links?: string[];
   /** Node ids that must be purchased (>=1 rank) before this unlocks. */
   requires: string[];
 }

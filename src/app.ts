@@ -1,14 +1,14 @@
 import { loadSave, persistSave, newSave } from "./core/save";
 import { startRun, stepRun, manualCast } from "./core/combat";
+import { buyNode as buyNodeCore } from "./core/economy";
 import { bankRun, type BankResult } from "./core/game";
 import type { RunState, SaveState } from "./core/types";
 import { SpriteSheet } from "./render/spritesheet";
-import { el, clear } from "./ui/dom";
-import { renderTavern } from "./ui/tavern";
-import { renderSkillTree } from "./ui/skilltree";
+import { clear } from "./ui/dom";
+import { renderHub } from "./ui/hub";
 import { DungeonView } from "./ui/dungeon";
 
-export type Screen = "tavern" | "skilltree" | "dungeon";
+export type Screen = "tavern" | "dungeon";
 
 const SIM_DT = 0.1; // fixed simulation timestep (seconds)
 
@@ -75,6 +75,13 @@ export class App {
 
   castAbility(classId: string): void {
     if (this.run) manualCast(this.run, classId);
+  }
+
+  /** Buy/recruit/unlock a skill-graph node; re-renders on success. */
+  buyNode(nodeId: string): boolean {
+    const r = buyNodeCore(this.save, nodeId);
+    if (r.ok) this.setSave(r.save);
+    return r.ok;
   }
 
   /** Called when a run reaches won/wiped: bank rewards into the save. */
@@ -181,33 +188,6 @@ export class App {
       this.root.append(this.dungeonView.mount());
       return;
     }
-    const content =
-      this.screen === "skilltree" ? renderSkillTree(this) : renderTavern(this);
-    this.root.append(content);
+    this.root.append(renderHub(this));
   }
-}
-
-/** Shared top bar with currencies and navigation. */
-export function topBar(app: App, active: Screen): HTMLElement {
-  const navBtn = (label: string, screen: Screen) =>
-    el(
-      "button",
-      {
-        class: "nav-btn" + (active === screen ? " active" : ""),
-        onclick: () => app.go(screen),
-      },
-      [label],
-    );
-  return el("header", { class: "topbar" }, [
-    el("div", { class: "brand" }, ["⚔ Idle Party"]),
-    el("div", { class: "currencies" }, [
-      el("span", { class: "coin-amt", title: "Gold" }, [
-        "🪙 " + Math.floor(app.save.gold).toLocaleString(),
-      ]),
-      el("span", { class: "sigil-amt", title: "Sigils" }, [
-        "🔹 " + app.save.sigils,
-      ]),
-    ]),
-    el("nav", {}, [navBtn("Tavern", "tavern"), navBtn("Skill Tree", "skilltree")]),
-  ]);
 }

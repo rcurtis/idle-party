@@ -10,7 +10,9 @@ Runs in any browser and is structured to package as a desktop app via Tauri.
 
 ## The loop
 
-1. **Tavern** — recruit party members and buy skill-tree upgrades with gold.
+1. **Hub (skill graph)** — one connected node graph. Each class is a wing: spend
+   gold on a wing's entry node to recruit that class, then buy multi-rank upgrade
+   nodes down the wing. Hit **Expedition** to choose a dungeon.
 2. **Dungeon run** — your party auto-advances and auto-fights. Tap a character's
    ability for an optional manual cast (or leave auto-cast on). Pick the speed
    (1× / 2× / 4×).
@@ -53,7 +55,7 @@ src/
     game.ts         Banks run results into the save
     save.ts         localStorage save + versioned migration
   render/    Canvas sprite-sheet renderer + dungeon scene
-  ui/        Tavern, Skill Tree, and Dungeon screens (no framework)
+  ui/        Hub (node-graph) and Dungeon screens (no framework)
   assets/    Generated pixel-art sprite sheet + manifest
 scripts/
   gen-art.mjs       Authors the sprite sheet as a PNG

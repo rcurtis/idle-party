@@ -22,6 +22,16 @@ function unlockNode(
   return { id, name, cost, maxRanks: 1, unlock, requires };
 }
 
+/** Wing-entry node: clicking it recruits the class (cost is the class recruitCost). */
+function recruitAnchor(id: string, recruit: ClassId, name: string): SkillNode {
+  return { id, name, cost: 0, maxRanks: 1, recruit, requires: [] };
+}
+
+/** Gate node: clicking spends sigils to unlock a locked wing. */
+function gate(id: string, unlockWing: string, name: string): SkillNode {
+  return { id, name, cost: 0, maxRanks: 1, unlockWing, requires: [] };
+}
+
 // Open-from-start wings (one per class + a shared party wing).
 
 const marksman: SkillWing = {
@@ -29,6 +39,7 @@ const marksman: SkillWing = {
   name: "Marksman (Ranger)",
   sigilCost: 0,
   nodes: [
+    recruitAnchor("rec_ranger", "ranger", "Ranger"),
     node("rg_dmg", "Sharpened Tips", 18, 8, {
       target: "ranger",
       stat: "attack",
@@ -57,6 +68,7 @@ const vanguard: SkillWing = {
   name: "Vanguard (Knight)",
   sigilCost: 0,
   nodes: [
+    recruitAnchor("rec_knight", "knight", "Knight"),
     node("kn_hp", "Thick Hide", 12, 10, {
       target: "knight",
       stat: "maxHp",
@@ -95,6 +107,7 @@ const devotion: SkillWing = {
   name: "Devotion (Cleric)",
   sigilCost: 0,
   nodes: [
+    recruitAnchor("rec_cleric", "cleric", "Cleric"),
     node("cl_heal", "Greater Mending", 28, 8, {
       target: "cleric",
       stat: "healPower",
@@ -123,6 +136,7 @@ const arcane: SkillWing = {
   name: "Arcane (Mage)",
   sigilCost: 0,
   nodes: [
+    recruitAnchor("rec_mage", "mage", "Mage"),
     node("mg_dmg", "Spell Power", 26, 10, {
       target: "mage",
       stat: "attack",
@@ -151,6 +165,7 @@ const affliction: SkillWing = {
   name: "Affliction (Warlock)",
   sigilCost: 0,
   nodes: [
+    recruitAnchor("rec_warlock", "warlock", "Warlock"),
     node("wl_dmg", "Virulence", 24, 10, {
       target: "warlock",
       stat: "attack",
@@ -201,6 +216,7 @@ const bulwark: SkillWing = {
   name: "Bulwark (Locked)",
   sigilCost: 1,
   nodes: [
+    gate("gate_bulwark", "bulwark", "Bulwark"),
     node("bw_armor", "Aegis", 150, 5, {
       target: "party",
       stat: "armor",
@@ -229,6 +245,7 @@ const ascendant: SkillWing = {
   name: "Ascendant (Locked)",
   sigilCost: 1,
   nodes: [
+    gate("gate_ascendant", "ascendant", "Ascendant"),
     node("as_dmg", "Killing Edge", 180, 8, {
       target: "party",
       stat: "attack",
@@ -255,9 +272,74 @@ export const WINGS: SkillWing[] = [
   ascendant,
 ];
 
+/** Virtual coordinate space the hub graph is authored in. */
+export const GRAPH_W = 1040;
+export const GRAPH_H = 600;
+
+/**
+ * Hand-authored node positions (centers) and visual wires. The Knight anchor
+ * sits top-left; class wings stack down a left spine and fan out to the right;
+ * locked wings hang off the party cluster on the right.
+ */
+const LAYOUT: Record<string, { x: number; y: number; links?: string[] }> = {
+  // Knight (starter)
+  rec_knight: { x: 90, y: 70 },
+  kn_hp: { x: 235, y: 48, links: ["rec_knight"] },
+  kn_armor: { x: 235, y: 112, links: ["rec_knight"] },
+  kn_ironwall: { x: 380, y: 48, links: ["kn_hp"] },
+  kn_threat: { x: 380, y: 112, links: ["kn_hp"] },
+  // Ranger
+  rec_ranger: { x: 90, y: 185, links: ["rec_knight"] },
+  rg_dmg: { x: 235, y: 178, links: ["rec_ranger"] },
+  rg_speed: { x: 235, y: 240, links: ["rec_ranger"] },
+  rg_hp: { x: 380, y: 178, links: ["rg_dmg"] },
+  // Cleric
+  rec_cleric: { x: 90, y: 300, links: ["rec_ranger"] },
+  cl_heal: { x: 235, y: 300, links: ["rec_cleric"] },
+  cl_speed: { x: 235, y: 362, links: ["rec_cleric"] },
+  cl_hp: { x: 380, y: 300, links: ["cl_heal"] },
+  // Mage
+  rec_mage: { x: 90, y: 415, links: ["rec_cleric"] },
+  mg_dmg: { x: 235, y: 425, links: ["rec_mage"] },
+  mg_ability: { x: 380, y: 425, links: ["mg_dmg"] },
+  mg_cd: { x: 520, y: 425, links: ["mg_ability"] },
+  // Warlock
+  rec_warlock: { x: 90, y: 528, links: ["rec_mage"] },
+  wl_dmg: { x: 235, y: 528, links: ["rec_warlock"] },
+  wl_ability: { x: 380, y: 528, links: ["wl_dmg"] },
+  wl_cd: { x: 520, y: 528, links: ["wl_ability"] },
+  // Warband (party) — central cluster
+  pt_hp: { x: 560, y: 120, links: ["kn_ironwall"] },
+  pt_dmg: { x: 560, y: 184, links: ["pt_hp"] },
+  // Bulwark (locked)
+  gate_bulwark: { x: 700, y: 270, links: ["pt_dmg"] },
+  bw_armor: { x: 840, y: 235, links: ["gate_bulwark"] },
+  bw_knhp: { x: 840, y: 300, links: ["gate_bulwark"] },
+  bw_heal: { x: 975, y: 300, links: ["bw_knhp"] },
+  // Ascendant (locked)
+  gate_ascendant: { x: 700, y: 430, links: ["gate_bulwark"] },
+  as_dmg: { x: 840, y: 410, links: ["gate_ascendant"] },
+  as_ap: { x: 840, y: 475, links: ["gate_ascendant"] },
+};
+
+for (const wing of WINGS) {
+  for (const n of wing.nodes) {
+    const l = LAYOUT[n.id];
+    if (l) {
+      n.pos = { x: l.x, y: l.y };
+      n.links = l.links ?? [];
+    }
+  }
+}
+
 const NODE_INDEX: Record<string, { node: SkillNode; wing: SkillWing }> = {};
 for (const wing of WINGS) {
   for (const n of wing.nodes) NODE_INDEX[n.id] = { node: n, wing };
+}
+
+/** All nodes across all wings, flat (for graph rendering). */
+export function allNodes(): { node: SkillNode; wing: SkillWing }[] {
+  return WINGS.flatMap((wing) => wing.nodes.map((node) => ({ node, wing })));
 }
 
 export function getNode(id: string): SkillNode {
