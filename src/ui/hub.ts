@@ -53,7 +53,7 @@ function nodeFamily(node: SkillNode, wingId: string): string {
 
 function statLabel(node: SkillNode): string {
   if (node.unlockWing) return "WING";
-  if (node.unlock) return "WALL"; // ability unlock (Iron Wall)
+  if (node.unlock) return node.unlock.label; // ability unlock (Iron Wall, Volley)
   if (node.effect) return STAT_LABEL[node.effect.stat];
   return "?";
 }
@@ -79,6 +79,25 @@ export function renderHub(app: App): HTMLElement {
   const posOf = (id: string) => allNodes().find((n) => n.node.id === id)?.node.pos;
 
   // --- Header ---
+  // Dungeon picker: a dropdown (locked dungeons disabled) sitting to the right
+  // of the Expedition button, which launches whatever is selected.
+  const dungeonSelect = el(
+    "select",
+    { class: "dungeon-select", "aria-label": "Choose an expedition" },
+    DUNGEON_ORDER.map((id) => {
+      const def = getDungeon(id);
+      const unlocked = save.unlockedDungeons.includes(id);
+      const beaten = save.bossesDefeated.includes(id);
+      const label = unlocked
+        ? `${def.name} · ${def.goldMultiplier}× gold${beaten ? " · ✓ cleared" : ""}`
+        : `${def.name} · 🔒 locked`;
+      return el("option", { value: id, disabled: !unlocked }, [label]);
+    }),
+  );
+  // Default to the furthest dungeon the player has unlocked.
+  const unlockedIds = DUNGEON_ORDER.filter((id) => save.unlockedDungeons.includes(id));
+  dungeonSelect.value = unlockedIds[unlockedIds.length - 1] ?? DUNGEON_ORDER[0];
+
   const header = el("header", { class: "hub-topbar" }, [
     el("div", { class: "brand" }, ["⚔ Idle Party"]),
     el("div", { class: "currencies" }, [
@@ -87,9 +106,16 @@ export function renderHub(app: App): HTMLElement {
     ]),
     el(
       "button",
-      { class: "expedition-btn", onclick: () => overlay.classList.remove("hidden") },
+      {
+        class: "expedition-btn",
+        onclick: () => {
+          const id = dungeonSelect.value;
+          if (save.unlockedDungeons.includes(id)) app.startDungeon(id);
+        },
+      },
       ["▶ Expedition"],
     ),
+    dungeonSelect,
   ]);
 
   // --- Tooltip (single, repositioned on hover) ---
@@ -233,9 +259,6 @@ export function renderHub(app: App): HTMLElement {
     ),
   ]);
 
-  // --- Expedition overlay (dungeon picker) ---
-  const overlay = buildExpedition(app);
-
   // Scale the fixed-size graph to fit the available width (no horizontal scroll).
   requestAnimationFrame(() => {
     const avail = graphWrap.clientWidth - 4;
@@ -245,7 +268,7 @@ export function renderHub(app: App): HTMLElement {
     graphWrap.style.height = `${GRAPH_H * s + 20}px`;
   });
 
-  return el("main", { class: "screen hub" }, [header, graphWrap, footer, overlay]);
+  return el("main", { class: "screen hub" }, [header, graphWrap, footer]);
 }
 
 function showTip(
@@ -261,7 +284,6 @@ function showTip(
   if (node.recruit) {
     const def = CLASSES[node.recruit];
     lines.push(el("div", { class: "tip-title" }, [def.name + " — " + def.role]));
-    lines.push(el("div", { class: "tip-eff" }, [def.blurb]));
     lines.push(statBlock(node.recruit, save));
     lines.push(
       el("div", { class: "tip-cost" }, [
@@ -287,6 +309,12 @@ function showTip(
       ]),
     );
     lines.push(el("div", { class: "tip-eff" }, [effectText(node)]));
+    if (node.unlock) {
+      const cd = resolveStats(node.unlock.target, save).abilityCooldown;
+      lines.push(
+        el("div", { class: "tip-eff" }, [`Cooldown: ${fmtStat("abilityCooldown", cd)}`]),
+      );
+    }
     let costLine = `Buy · ${fmt(st.cost)}🪙`;
     if (st.maxed) costLine = "✓ Maxed";
     else if (!st.available) costLine = lockReason(node, wingId, save);
@@ -374,41 +402,6 @@ function lockReason(node: SkillNode, wingId: string, save: SaveState): string {
     .find((p) => !nodeStatus(save, p.id).owned);
   if (lockedParent) return `🔒 Unlock ${lockedParent.name} first`;
   return "🔒 Locked";
-}
-
-function buildExpedition(app: App): HTMLElement {
-  const cards = DUNGEON_ORDER.map((id) => {
-    const def = getDungeon(id);
-    const unlocked = app.save.unlockedDungeons.includes(id);
-    const beaten = app.save.bossesDefeated.includes(id);
-    return el("div", { class: "exp-card" + (unlocked ? "" : " locked") }, [
-      el("div", { class: "exp-name" }, [
-        def.name,
-        beaten ? el("span", { class: "beaten-tag" }, [" ✓ cleared"]) : "",
-      ]),
-      el("div", { class: "exp-meta" }, [
-        `${def.levels.length} levels · boss · ${def.goldMultiplier}× gold`,
-      ]),
-      unlocked
-        ? el("button", { class: "primary-btn", onclick: () => app.startDungeon(id) }, ["Enter"])
-        : el("div", { class: "locked-hint" }, ["🔒 Defeat the previous boss"]),
-    ]);
-  });
-
-  const overlay = el("div", { class: "exp-overlay hidden" }, []);
-  const close = () => overlay.classList.add("hidden");
-  const card = el("div", { class: "exp-modal" }, [
-    el("div", { class: "exp-modal-head" }, [
-      el("h2", {}, ["Choose an Expedition"]),
-      el("button", { class: "ghost-btn", onclick: close }, ["✕"]),
-    ]),
-    el("div", { class: "exp-grid" }, cards),
-  ]);
-  overlay.append(card);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) close();
-  });
-  return overlay;
 }
 
 // Re-export so callers needn't reach into core for wing data.

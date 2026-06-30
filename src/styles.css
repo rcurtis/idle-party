@@ -190,17 +190,9 @@ button:disabled {
   font-weight: bold;
   font-size: 15px;
 }
-.beaten-tag {
-  color: var(--good);
-  font-size: 12px;
-}
 .dungeon-meta {
   color: var(--muted);
   font-size: 12px;
-}
-.locked-hint {
-  color: var(--muted);
-  font-size: 13px;
 }
 .primary-btn {
   background: var(--accent);
@@ -461,59 +453,26 @@ svg.wires {
   padding: 12px 22px;
   border-top: 1px solid var(--border);
 }
-.exp-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(8, 5, 14, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
-.exp-overlay.hidden {
-  display: none;
-}
-.exp-modal {
-  background: var(--panel);
-  border: 2px solid var(--accent);
-  border-radius: 12px;
-  padding: 18px 22px;
-  width: min(560px, 92vw);
-}
-.exp-modal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.exp-modal-head h2 {
-  margin: 0;
-  border: none;
-  padding: 0;
-}
-.exp-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 12px;
-}
-.exp-card {
+.dungeon-select {
   background: var(--panel-light);
+  color: var(--ink);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.exp-card.locked {
-  opacity: 0.6;
-}
-.exp-name {
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: inherit;
   font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
 }
-.exp-meta {
+.dungeon-select:hover {
+  border-color: var(--accent);
+}
+.dungeon-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.dungeon-select option:disabled {
   color: var(--muted);
-  font-size: 12px;
 }
 
 /* ---- Skill tree ---- */

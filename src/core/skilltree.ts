@@ -16,7 +16,7 @@ function unlockNode(
   id: string,
   name: string,
   cost: number,
-  unlock: { target: ClassId; desc: string },
+  unlock: { target: ClassId; desc: string; label: string },
   requires: string[] = [],
 ): SkillNode {
   return { id, name, cost, maxRanks: 1, unlock, requires };
@@ -60,6 +60,17 @@ const marksman: SkillWing = {
       { target: "ranger", stat: "maxHp", op: "add", value: 20 },
       ["rg_dmg"],
     ),
+    unlockNode(
+      "rg_volley",
+      "Volley",
+      50,
+      {
+        target: "ranger",
+        desc: "Unlocks Volley: the Ranger's shots strike up to 3 enemies at once.",
+        label: "VLY",
+      },
+      ["rg_dmg"],
+    ),
   ],
 };
 
@@ -73,7 +84,7 @@ const vanguard: SkillWing = {
       target: "knight",
       stat: "maxHp",
       op: "add",
-      value: 45,
+      value: 55,
     }),
     node("kn_armor", "Plate Mastery", 22, 6, {
       target: "knight",
@@ -84,10 +95,11 @@ const vanguard: SkillWing = {
     unlockNode(
       "kn_ironwall",
       "Iron Wall",
-      40,
+      35,
       {
         target: "knight",
         desc: "Unlocks Iron Wall: the Knight gains a damage-absorbing shield on cooldown.",
+        label: "WALL",
       },
       ["kn_hp"],
     ),
@@ -299,6 +311,7 @@ const LAYOUT: Record<string, { x: number; y: number; links?: string[] }> = {
   rg_dmg: { x: 235, y: 178, links: ["rec_ranger"] },
   rg_speed: { x: 235, y: 240, links: ["rec_ranger"] },
   rg_hp: { x: 380, y: 178, links: ["rg_dmg"] },
+  rg_volley: { x: 380, y: 240, links: ["rg_dmg"] },
   // Cleric
   rec_cleric: { x: 90, y: 300, links: ["rec_ranger"] },
   cl_heal: { x: 235, y: 300, links: ["rec_cleric"] },

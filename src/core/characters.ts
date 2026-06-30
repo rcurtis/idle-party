@@ -22,13 +22,15 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     role: "tank",
     starter: true,
     recruitCost: 0,
-    blurb: "Holds the front line, draws enemy aggression. Fragile until you invest in him. You start with the Knight.",
     base: stats({
-      maxHp: 90,
-      attack: 8,
+      maxHp: 95,
+      attack: 9,
       attackInterval: 1.5,
       armor: 0.12,
       threat: 4,
+      // Iron Wall is a strong rank-1 shield, so it sits on a longer leash than
+      // the default 8s ability cooldown.
+      abilityCooldown: 10,
     }),
     ability: {
       id: "taunt",
@@ -46,14 +48,19 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     role: "dps",
     starter: false,
     recruitCost: 60,
-    blurb: "Steady single-target arrows. Your first recruit — adds the damage your Knight lacks.",
     base: stats({
       maxHp: 80,
       attack: 14,
-      attackInterval: 1.1,
+      attackInterval: 1.4,
       armor: 0.02,
     }),
-    ability: { id: "volley", name: "Volley", kind: "volley", magnitude: 2.2 },
+    ability: {
+      id: "volley",
+      name: "Volley",
+      kind: "volley",
+      magnitude: 2.2,
+      requiresNode: "rg_volley",
+    },
   },
   cleric: {
     id: "cleric",
@@ -61,14 +68,13 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     role: "healer",
     starter: false,
     recruitCost: 220,
-    blurb: "Keeps the party standing. Heals the most wounded ally.",
     base: stats({
       maxHp: 110,
       attack: 5,
-      attackInterval: 2.0,
+      attackInterval: 3.5,
       armor: 0.08,
       healPower: 16,
-      abilityCooldown: 10,
+      abilityCooldown: 20,
     }),
     ability: { id: "bigheal", name: "Sanctuary", kind: "bigheal", magnitude: 4 },
   },
@@ -78,7 +84,6 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     role: "dps",
     starter: false,
     recruitCost: 280,
-    blurb: "Glass-cannon burst. Devastating nukes on cooldown.",
     base: stats({
       maxHp: 70,
       attack: 18,
@@ -94,7 +99,6 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     role: "dps",
     starter: false,
     recruitCost: 360,
-    blurb: "Stacks corrosive damage-over-time on foes.",
     base: stats({
       maxHp: 85,
       attack: 9,

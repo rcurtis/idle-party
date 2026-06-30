@@ -39,6 +39,7 @@ function strongSave(): SaveState {
     "kn_hp", "kn_hp", "kn_hp", "kn_hp", "kn_hp", "kn_hp",
     "kn_armor", "kn_armor", "kn_armor",
     "kn_ironwall",
+    "rg_dmg", "rg_volley",
     "cl_heal", "cl_heal", "cl_heal", "cl_heal",
     "cl_hp", "cl_hp",
   ];

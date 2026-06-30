@@ -35,8 +35,6 @@ export interface ClassDef {
   recruitCost: number;
   base: Stats;
   ability: AbilityDef;
-  /** Short flavor for UI. */
-  blurb: string;
 }
 
 export type AbilityKind = "taunt" | "bigheal" | "nuke" | "dot" | "volley";
@@ -141,8 +139,9 @@ export interface SkillNode {
   maxRanks: number;
   /** Stat effect per rank. Omitted for unlock-style nodes. */
   effect?: NodeEffect;
-  /** Unlock-style node (no stat effect): which class it belongs to + blurb. */
-  unlock?: { target: ClassId; desc: string };
+  /** Unlock-style node (no stat effect): the class it belongs to, a description,
+   * and a short label shown on the node box. */
+  unlock?: { target: ClassId; desc: string; label: string };
   /** Recruit-anchor node: clicking recruits this class (cost = recruitCost in gold). */
   recruit?: ClassId;
   /** Gate node: clicking spends sigils to unlock the given wing. */

@@ -15,9 +15,9 @@ function enemy(
 // --- Dungeon 1: The Catacombs ---------------------------------------------
 
 const catacombsEnemies: Record<string, EnemyDef> = {
-  rat: enemy("rat", "Tomb Rat", 55, 5, 1.2, 0, 4),
-  skeleton: enemy("skeleton", "Skeleton", 100, 9, 1.4, 0.05, 7),
-  ghoul: enemy("ghoul", "Ghoul", 165, 13, 1.5, 0.1, 12),
+  rat: enemy("rat", "Tomb Rat", 55, 5, 1.2, 0, 7),
+  skeleton: enemy("skeleton", "Skeleton", 100, 9, 1.4, 0.05, 12),
+  ghoul: enemy("ghoul", "Ghoul", 165, 13, 1.5, 0.1, 18),
   bossLich: enemy("bossLich", "The Bone Lich", 1400, 28, 1.3, 0.2, 220),
 };
 
