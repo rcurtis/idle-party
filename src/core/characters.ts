@@ -58,7 +58,9 @@ export const CLASSES: Record<ClassId, ClassDef> = {
       id: "volley",
       name: "Volley",
       kind: "volley",
-      magnitude: 2.2,
+      // Per-target damage is intentionally below a normal shot: Volley trades
+      // single-target punch for hitting up to 3 enemies at once.
+      magnitude: 0.7,
       requiresNode: "rg_volley",
     },
   },
