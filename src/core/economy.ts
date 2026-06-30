@@ -131,7 +131,7 @@ export function recruit(save: SaveState, classId: ClassId): EconResult {
 }
 
 /** Per-rank cost growth: each rank costs this much more than the previous. */
-export const COST_GROWTH = 1.5;
+export const COST_GROWTH = 1.85;
 
 /** Cost of the next rank of a node (escalates per COST_GROWTH, rounded). */
 export function nodeCost(save: SaveState, nodeId: string): number {
