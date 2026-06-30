@@ -89,7 +89,7 @@ export function renderHub(app: App): HTMLElement {
       const unlocked = save.unlockedDungeons.includes(id);
       const beaten = save.bossesDefeated.includes(id);
       const label = unlocked
-        ? `${def.name} · ${def.goldMultiplier}× gold${beaten ? " · ✓ cleared" : ""}`
+        ? `${def.name}${beaten ? " · ✓ cleared" : ""}`
         : `${def.name} · 🔒 locked`;
       return el("option", { value: id, disabled: !unlocked }, [label]);
     }),
