@@ -130,11 +130,14 @@ export function recruit(save: SaveState, classId: ClassId): EconResult {
   };
 }
 
-/** Cost of the next rank of a node (escalates 35% per rank, rounded). */
+/** Per-rank cost growth: each rank costs this much more than the previous. */
+export const COST_GROWTH = 1.5;
+
+/** Cost of the next rank of a node (escalates per COST_GROWTH, rounded). */
 export function nodeCost(save: SaveState, nodeId: string): number {
   const node = getNode(nodeId);
   const ranks = save.purchased[nodeId] ?? 0;
-  return Math.round(node.cost * Math.pow(1.35, ranks));
+  return Math.round(node.cost * Math.pow(COST_GROWTH, ranks));
 }
 
 function wingUnlocked(save: SaveState, wingId: string): boolean {
