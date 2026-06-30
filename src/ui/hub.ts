@@ -1,5 +1,6 @@
 import type { App } from "../app";
 import { CLASSES } from "../core/characters";
+import { resolveStats } from "../core/stats";
 import { nodeStatus } from "../core/economy";
 import { DUNGEON_ORDER, getDungeon } from "../core/dungeons";
 import {
@@ -261,6 +262,7 @@ function showTip(
     const def = CLASSES[node.recruit];
     lines.push(el("div", { class: "tip-title" }, [def.name + " — " + def.role]));
     lines.push(el("div", { class: "tip-eff" }, [def.blurb]));
+    lines.push(statBlock(node.recruit, save));
     lines.push(
       el("div", { class: "tip-cost" }, [
         st.owned ? "✓ Recruited" : `Recruit · ${fmt(st.cost)}🪙`,
@@ -310,6 +312,45 @@ function showTip(
     tip.classList.toggle("tip-below", below);
     tip.style.left = `${Math.max(halfW, Math.min(wrap.clientWidth - halfW, cx))}px`;
     tip.style.top = `${below ? bottom + 8 : top - 8}px`;
+  }
+}
+
+/** A compact 2-column grid of a party member's current (upgrade-resolved) stats. */
+function statBlock(classId: ClassId, save: SaveState): HTMLElement {
+  const s = resolveStats(classId, save);
+  const role = CLASSES[classId].role;
+  const rows: StatKey[] = ["maxHp", "attack", "attackInterval", "armor"];
+  if (role === "tank") rows.push("threat");
+  if (s.healPower > 0) rows.push("healPower");
+  rows.push("abilityPower", "abilityCooldown");
+  return el(
+    "div",
+    { class: "tip-stats" },
+    rows.flatMap((k) => [
+      el("span", { class: "tip-stat-k" }, [STAT_NAME[k]]),
+      el("span", { class: "tip-stat-v" }, [fmtStat(k, s[k])]),
+    ]),
+  );
+}
+
+function fmtStat(stat: StatKey, v: number): string {
+  switch (stat) {
+    case "maxHp":
+    case "healPower":
+      return String(Math.round(v));
+    case "attack":
+    case "threat":
+      return String(Math.round(v * 10) / 10);
+    case "attackInterval":
+      return `${v.toFixed(2)}s`;
+    case "armor":
+      return `${Math.round(v * 100)}%`;
+    case "abilityPower":
+      return `×${v.toFixed(2)}`;
+    case "abilityCooldown":
+      return `${v.toFixed(1)}s`;
+    default:
+      return String(v);
   }
 }
 
