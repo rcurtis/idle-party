@@ -73,7 +73,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
       attack: 5,
       attackInterval: 3.5,
       armor: 0.08,
-      healPower: 16,
+      healPower: 6,
       abilityCooldown: 20,
     }),
     ability: { id: "bigheal", name: "Sanctuary", kind: "bigheal", magnitude: 4 },
