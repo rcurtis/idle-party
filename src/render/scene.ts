@@ -78,6 +78,7 @@ export function drawScene(
       ctx.fillStyle = "#9c4dcc";
       ctx.fillRect(ebx, y - 12, Math.min(ebarW, e.dotStacks * 3), 2);
     }
+    drawLabel(ctx, e.name, x + fullW / 2, y - 16, e.isBoss);
   });
 
   // Effects on top of everything.
@@ -100,6 +101,23 @@ function drawSprite(
   const cx = x + off.dx - (scaled - base) / 2;
   const cy = y + off.dy - (scaled - base) / 2;
   layout.sheet.draw(ctx, name, cx, cy, baseScale * off.scale, flip);
+}
+
+/** Draw an enemy name centered at (cx) with a baseline at (y), with a shadow. */
+function drawLabel(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  cx: number,
+  y: number,
+  isBoss: boolean,
+): void {
+  ctx.font = `${isBoss ? "12px" : "10px"} ui-monospace, monospace`;
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(0,0,0,0.75)";
+  ctx.fillText(text, cx + 1, y + 1);
+  ctx.fillStyle = isBoss ? "#ffd45c" : "#f0e6d2";
+  ctx.fillText(text, cx, y);
+  ctx.textAlign = "left";
 }
 
 function drawBar(
