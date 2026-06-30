@@ -12,6 +12,9 @@ import {
 import { resolveStats } from "./stats";
 import { startRun, stepRun, manualCast, buildParty } from "./combat";
 import { bankRun } from "./game";
+import { DUNGEONS, DUNGEON_ORDER, getDungeon, nextDungeonId } from "./dungeons";
+import { ALL_CLASS_IDS } from "./characters";
+import spriteManifest from "../assets/sprites.json";
 import type { RunState, SaveState } from "./types";
 
 /** Run a dungeon to completion (won or wiped) with fixed dt. */
@@ -363,5 +366,40 @@ describe("game: banking run results", () => {
     expect(banked.newDungeon).toBe("crypt");
     expect(banked.save.unlockedDungeons).toContain("crypt");
     expect(banked.save.sigils).toBe(s.sigils + 1);
+  });
+});
+
+describe("dungeons: structure and art", () => {
+  const frames = spriteManifest.frames as Record<string, unknown>;
+
+  it("every class and enemy has a matching sprite", () => {
+    for (const id of ALL_CLASS_IDS) {
+      expect(frames[id], `missing sprite for class ${id}`).toBeDefined();
+    }
+    for (const id of DUNGEON_ORDER) {
+      for (const enemyId of Object.keys(getDungeon(id).enemies)) {
+        expect(frames[enemyId], `missing sprite for enemy ${enemyId}`).toBeDefined();
+      }
+    }
+  });
+
+  it("each dungeon ends in exactly one boss level", () => {
+    for (const id of DUNGEON_ORDER) {
+      const def = getDungeon(id);
+      const bossLevels = def.levels.filter((l) => l.isBoss);
+      expect(bossLevels.length, `${id} boss levels`).toBe(1);
+      expect(def.levels[def.levels.length - 1].isBoss, `${id} last level is boss`).toBe(true);
+      // The boss pack must reference a boss-prefixed enemy (engine keys off this).
+      const bossPack = def.levels[def.levels.length - 1].packs[0];
+      expect(bossPack.every((e) => e.startsWith("boss"))).toBe(true);
+    }
+  });
+
+  it("dungeon order forms an unlock chain ending in null", () => {
+    for (let i = 0; i < DUNGEON_ORDER.length - 1; i++) {
+      expect(nextDungeonId(DUNGEON_ORDER[i])).toBe(DUNGEON_ORDER[i + 1]);
+    }
+    expect(nextDungeonId(DUNGEON_ORDER[DUNGEON_ORDER.length - 1])).toBeNull();
+    expect(Object.keys(DUNGEONS).sort()).toEqual([...DUNGEON_ORDER].sort());
   });
 });

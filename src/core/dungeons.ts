@@ -73,12 +73,78 @@ const crypt: DungeonDef = {
   ],
 };
 
+// --- Dungeon 3: The Volcanic Forge ----------------------------------------
+
+const forgeEnemies: Record<string, EnemyDef> = {
+  fireImp: enemy("fireImp", "Fire Imp", 680, 40, 1.1, 0.1, 30),
+  magmaHound: enemy("magmaHound", "Magma Hound", 1050, 58, 1.3, 0.2, 42),
+  forgeGolem: enemy("forgeGolem", "Forge Golem", 1750, 78, 1.7, 0.38, 65),
+  bossForgeTyrant: enemy("bossForgeTyrant", "The Forge Tyrant", 17000, 125, 1.2, 0.35, 1600),
+};
+
+const forge: DungeonDef = {
+  id: "forge",
+  name: "The Volcanic Forge",
+  goldMultiplier: 5.5,
+  enemies: forgeEnemies,
+  levels: [
+    { isBoss: false, packs: [["fireImp"], ["fireImp", "fireImp"], ["magmaHound"]] },
+    {
+      isBoss: false,
+      packs: [["fireImp", "fireImp"], ["magmaHound"], ["magmaHound", "fireImp"]],
+    },
+    {
+      isBoss: false,
+      packs: [["magmaHound"], ["magmaHound", "fireImp", "fireImp"], ["forgeGolem"]],
+    },
+    {
+      isBoss: false,
+      packs: [["magmaHound", "magmaHound"], ["forgeGolem"], ["forgeGolem", "magmaHound"]],
+    },
+    { isBoss: true, packs: [["bossForgeTyrant"]] },
+  ],
+};
+
+// --- Dungeon 4: The Clockwork Depths --------------------------------------
+
+const clockworkEnemies: Record<string, EnemyDef> = {
+  gearSentry: enemy("gearSentry", "Gear Sentry", 1450, 74, 1.0, 0.18, 50),
+  steamGolem: enemy("steamGolem", "Steam Golem", 2300, 102, 1.4, 0.3, 70),
+  warAutomaton: enemy("warAutomaton", "War Automaton", 3700, 132, 1.6, 0.45, 100),
+  bossGrandEngine: enemy("bossGrandEngine", "The Grand Engine", 36000, 210, 1.1, 0.4, 3500),
+};
+
+const clockwork: DungeonDef = {
+  id: "clockwork",
+  name: "The Clockwork Depths",
+  goldMultiplier: 12,
+  enemies: clockworkEnemies,
+  levels: [
+    { isBoss: false, packs: [["gearSentry"], ["gearSentry", "gearSentry"], ["steamGolem"]] },
+    {
+      isBoss: false,
+      packs: [["gearSentry", "gearSentry"], ["steamGolem"], ["steamGolem", "gearSentry"]],
+    },
+    {
+      isBoss: false,
+      packs: [["steamGolem"], ["steamGolem", "gearSentry", "gearSentry"], ["warAutomaton"]],
+    },
+    {
+      isBoss: false,
+      packs: [["steamGolem", "steamGolem"], ["warAutomaton"], ["warAutomaton", "steamGolem"]],
+    },
+    { isBoss: true, packs: [["bossGrandEngine"]] },
+  ],
+};
+
 export const DUNGEONS: Record<string, DungeonDef> = {
   catacombs,
   crypt,
+  forge,
+  clockwork,
 };
 
-export const DUNGEON_ORDER: string[] = ["catacombs", "crypt"];
+export const DUNGEON_ORDER: string[] = ["catacombs", "crypt", "forge", "clockwork"];
 
 export const FIRST_DUNGEON = "catacombs";
 

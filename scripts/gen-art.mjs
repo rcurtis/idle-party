@@ -40,6 +40,12 @@ const PAL = {
   Y: [201, 150, 46, 255],
   // red
   r: [224, 68, 79, 255],
+  // lava (bright / dark)
+  l: [255, 110, 50, 255],
+  L: [170, 45, 25, 255],
+  // copper / brass (light / dark)
+  c: [196, 132, 74, 255],
+  C: [130, 82, 42, 255],
   // brown
   m: [141, 110, 79, 255],
   M: [90, 68, 46, 255],
@@ -340,6 +346,171 @@ function bossKraken() {
   return c;
 }
 
+// --- Dungeon 3: Volcanic Forge enemies -------------------------------------
+function fireImp() {
+  const c = cell();
+  rect(c, 9, 12, 6, 6, "r"); // torso
+  rect(c, 9, 16, 6, 2, "L");
+  disc(c, 12, 9, 3, "r"); // head
+  px(c, 10, 9, "y");
+  px(c, 14, 9, "y"); // eyes
+  px(c, 9, 5, "L");
+  px(c, 8, 4, "L"); // horns
+  px(c, 15, 5, "L");
+  px(c, 16, 4, "L");
+  rect(c, 9, 18, 2, 3, "L"); // legs
+  rect(c, 13, 18, 2, 3, "L");
+  px(c, 6, 12, "f"); // flame aura
+  px(c, 7, 13, "y");
+  px(c, 18, 12, "f");
+  px(c, 17, 13, "y");
+  outline(c);
+  return c;
+}
+function magmaHound() {
+  const c = cell();
+  rect(c, 5, 13, 12, 5, "L"); // body
+  rect(c, 5, 13, 12, 2, "r"); // glowing back
+  disc(c, 17, 13, 3, "L"); // head
+  px(c, 18, 12, "y"); // eye
+  rect(c, 6, 18, 2, 3, "L"); // legs
+  rect(c, 10, 18, 2, 3, "L");
+  rect(c, 14, 18, 2, 3, "L");
+  px(c, 8, 15, "f"); // lava cracks
+  px(c, 11, 14, "l");
+  px(c, 13, 16, "f");
+  hline(c, 2, 14, 3, "L"); // tail
+  px(c, 1, 13, "f");
+  outline(c);
+  return c;
+}
+function forgeGolem() {
+  const c = cell();
+  rect(c, 6, 6, 12, 12, "H"); // dark stone torso
+  rect(c, 6, 6, 12, 2, "h");
+  rect(c, 8, 4, 8, 3, "H"); // head
+  px(c, 10, 5, "f");
+  px(c, 13, 5, "f"); // fiery eyes
+  rect(c, 3, 8, 3, 8, "H"); // arms
+  rect(c, 18, 8, 3, 8, "H");
+  rect(c, 7, 18, 4, 4, "h"); // legs
+  rect(c, 13, 18, 4, 4, "h");
+  px(c, 11, 9, "l"); // glowing cracks
+  px(c, 12, 10, "f");
+  px(c, 11, 11, "l");
+  px(c, 10, 12, "f");
+  px(c, 13, 13, "l");
+  outline(c);
+  return c;
+}
+function bossForgeTyrant() {
+  const c = cell();
+  rect(c, 5, 7, 13, 13, "L"); // massive torso
+  rect(c, 5, 7, 13, 2, "r");
+  rect(c, 15, 8, 3, 12, "k"); // shadow side
+  rect(c, 8, 2, 8, 6, "L"); // head
+  px(c, 7, 1, "L"); // horns
+  px(c, 16, 1, "L");
+  rect(c, 9, 4, 2, 2, "f"); // eyes
+  rect(c, 13, 4, 2, 2, "f");
+  hline(c, 9, 6, 6, "y"); // mouth glow
+  px(c, 9, 11, "l"); // lava cracks
+  px(c, 11, 13, "f");
+  px(c, 13, 15, "l");
+  px(c, 8, 16, "f");
+  px(c, 12, 17, "l");
+  rect(c, 2, 9, 3, 8, "L"); // arm
+  vline(c, 20, 6, 12, "M"); // hammer handle
+  rect(c, 18, 4, 5, 4, "h"); // hammer head
+  rect(c, 18, 4, 5, 1, "g");
+  outline(c);
+  return c;
+}
+
+// --- Dungeon 4: Clockwork Depths enemies ------------------------------------
+function gearSentry() {
+  const c = cell();
+  disc(c, 12, 12, 4, "c"); // brass body
+  disc(c, 12, 12, 2, "G"); // lens housing
+  px(c, 12, 12, "e"); // glowing lens
+  px(c, 12, 6, "C"); // gear teeth
+  px(c, 12, 18, "C");
+  px(c, 6, 12, "C");
+  px(c, 18, 12, "C");
+  px(c, 8, 8, "C");
+  px(c, 16, 8, "C");
+  px(c, 8, 16, "C");
+  px(c, 16, 16, "C");
+  outline(c);
+  return c;
+}
+function steamGolem() {
+  const c = cell();
+  rect(c, 7, 7, 10, 11, "c"); // brass torso
+  rect(c, 7, 7, 10, 2, "y"); // shine
+  rect(c, 14, 8, 3, 10, "C"); // shade
+  rect(c, 9, 3, 6, 4, "c"); // head
+  px(c, 10, 5, "e"); // eyes
+  px(c, 13, 5, "e");
+  rect(c, 4, 9, 3, 7, "C"); // arms
+  rect(c, 17, 9, 3, 7, "C");
+  rect(c, 8, 18, 3, 4, "C"); // legs
+  rect(c, 13, 18, 3, 4, "C");
+  px(c, 9, 10, "G"); // rivets
+  px(c, 14, 10, "G");
+  px(c, 11, 14, "G");
+  px(c, 8, 2, "g"); // steam pipe
+  px(c, 8, 1, "w");
+  outline(c);
+  return c;
+}
+function warAutomaton() {
+  const c = cell();
+  rect(c, 5, 6, 14, 13, "G"); // steel torso
+  rect(c, 5, 6, 14, 2, "g");
+  rect(c, 16, 7, 3, 12, "k"); // shade
+  rect(c, 8, 2, 8, 4, "g"); // head
+  rect(c, 9, 3, 6, 2, "k");
+  px(c, 10, 4, "r"); // red eyes
+  px(c, 13, 4, "r");
+  rect(c, 2, 8, 3, 9, "G"); // arms
+  rect(c, 19, 8, 3, 9, "G");
+  rect(c, 7, 19, 4, 3, "k"); // legs
+  rect(c, 13, 19, 4, 3, "k");
+  disc(c, 12, 12, 2, "c"); // chest core
+  px(c, 12, 12, "e");
+  px(c, 8, 9, "c"); // brass bolts
+  px(c, 16, 9, "c");
+  outline(c);
+  return c;
+}
+function bossGrandEngine() {
+  const c = cell();
+  rect(c, 4, 5, 16, 15, "G"); // huge boiler torso
+  rect(c, 4, 5, 16, 2, "g");
+  rect(c, 17, 6, 3, 14, "k");
+  disc(c, 12, 12, 4, "c"); // brass furnace core
+  disc(c, 12, 12, 2, "f");
+  px(c, 12, 12, "y");
+  rect(c, 9, 1, 6, 4, "C"); // head / chimney
+  px(c, 10, 0, "h");
+  px(c, 13, 0, "h");
+  px(c, 10, 3, "e"); // eyes
+  px(c, 13, 3, "e");
+  disc(c, 5, 7, 2, "C"); // gear shoulders
+  disc(c, 19, 7, 2, "C");
+  rect(c, 1, 9, 3, 9, "G"); // arms
+  rect(c, 20, 9, 3, 9, "G");
+  rect(c, 6, 20, 5, 3, "k"); // treads
+  rect(c, 13, 20, 5, 3, "k");
+  px(c, 7, 8, "y"); // rivets
+  px(c, 16, 8, "y");
+  px(c, 7, 16, "y");
+  px(c, 16, 16, "y");
+  outline(c);
+  return c;
+}
+
 // --- Props -----------------------------------------------------------------
 function coin() {
   const c = cell();
@@ -392,8 +563,16 @@ const SPRITES = {
   drowned: drowned(),
   wraith: wraith(),
   golem: golem(),
+  fireImp: fireImp(),
+  magmaHound: magmaHound(),
+  forgeGolem: forgeGolem(),
+  gearSentry: gearSentry(),
+  steamGolem: steamGolem(),
+  warAutomaton: warAutomaton(),
   bossLich: bossLich(),
   bossKraken: bossKraken(),
+  bossForgeTyrant: bossForgeTyrant(),
+  bossGrandEngine: bossGrandEngine(),
   coin: coin(),
   floor: floorTile(),
   wall: wallTile(),
