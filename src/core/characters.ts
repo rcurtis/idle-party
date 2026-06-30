@@ -50,7 +50,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     recruitCost: 60,
     base: stats({
       maxHp: 80,
-      attack: 14,
+      attack: 11,
       attackInterval: 1.4,
       armor: 0.02,
     }),
