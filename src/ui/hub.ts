@@ -219,9 +219,7 @@ export function renderHub(app: App): HTMLElement {
       }),
       " Sound effects",
     ]),
-    el("span", { class: "hub-hint" }, [
-      "Spend gold down a wing to recruit & upgrade. Beat bosses for Sigils 🔹 to unlock dashed wings.",
-    ]),
+    el("div", { class: "spacer" }, []),
     el(
       "button",
       {

@@ -446,11 +446,6 @@ svg.wires {
   padding: 12px 22px;
   border-top: 1px solid var(--border);
 }
-.hub-hint {
-  flex: 1;
-  color: var(--muted);
-  font-size: 12px;
-}
 .exp-overlay {
   position: fixed;
   inset: 0;
